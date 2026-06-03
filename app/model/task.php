@@ -13,56 +13,113 @@ class Task
     {
         $sql = "SELECT * FROM tasks WHERE 1=1";
         $params = [];
+        $paramIndex = 1;
 
         if (!empty($search)) {
-            $sql .= " AND (title LIKE :search OR id = :id)";
-            $params[':search'] = "%$search%";
-            $params[':id'] = is_numeric($search) ? $search : 0;
+            $sql .= " AND (title LIKE ? OR id = ?)";
+            $params[] = "%$search%";
+            $params[] = is_numeric($search) ? $search : 0;
+            $paramIndex += 2;
         }
 
         if (!empty($priority)) {
-            $sql .= " AND priority = :priority";
-            $params[':priority'] = $priority;
+            $sql .= " AND priority = ?";
+            $params[] = $priority;
+            $paramIndex++;
         }
 
         if (!empty($status)) {
-            $sql .= " AND status = :status";
-            $params[':status'] = $status;
+            $sql .= " AND status = ?";
+            $params[] = $status;
+            $paramIndex++;
         }
 
         if (!empty($date)) {
-            $sql .= " AND due_date = :date";
-            $params[':date'] = $date;
+            $sql .= " AND due_date = ?";
+            $params[] = $date;
+            $paramIndex++;
         }
 
-        $sql .= " ORDER BY id DESC LIMIT :limit OFFSET :offset";
+        $sql .= " ORDER BY id DESC LIMIT ? OFFSET ?";
 
-        $stmt = $this->pdo->prepare($sql);
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            
+            // Bind all filter parameters
+            foreach ($params as $index => $value) {
+                $stmt->bindValue($index + 1, $value);
+            }
+            
+            // Bind LIMIT and OFFSET with proper type casting
+            $stmt->bindValue($paramIndex, (int)$limit, PDO::PARAM_INT);
+            $stmt->bindValue($paramIndex + 1, (int)$offset, PDO::PARAM_INT);
 
-        foreach ($params as $key => $value) {
-            $stmt->bindValue($key, $value);
+            $stmt->execute();
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log('Database error in getAll: ' . $e->getMessage());
+            return [];
         }
-
-        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-
-        $stmt->execute();
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function create($title, $priority, $status, $dueDate)
     {
-        $stmt = $this->pdo->prepare(
-            "INSERT INTO tasks (title, priority, status, due_date)
-             VALUES (:title, :priority, :status, :due_date)"
-        );
+        try {
+            $stmt = $this->pdo->prepare(
+                "INSERT INTO tasks (title, priority, status, due_date)
+                 VALUES (?, ?, ?, ?)"
+            );
 
-        return $stmt->execute([
-            ':title' => $title,
-            ':priority' => $priority,
-            ':status' => $status,
-            ':due_date' => $dueDate
-        ]);
+            return $stmt->execute([
+                $title,
+                $priority,
+                $status,
+                $dueDate
+            ]);
+        } catch (PDOException $e) {
+            error_log('Database error in create: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function getTotal($search, $priority, $status, $date)
+    {
+        $sql = "SELECT COUNT(*) as total FROM tasks WHERE 1=1";
+        $params = [];
+
+        if (!empty($search)) {
+            $sql .= " AND (title LIKE ? OR id = ?)";
+            $params[] = "%$search%";
+            $params[] = is_numeric($search) ? $search : 0;
+        }
+
+        if (!empty($priority)) {
+            $sql .= " AND priority = ?";
+            $params[] = $priority;
+        }
+
+        if (!empty($status)) {
+            $sql .= " AND status = ?";
+            $params[] = $status;
+        }
+
+        if (!empty($date)) {
+            $sql .= " AND due_date = ?";
+            $params[] = $date;
+        }
+
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            foreach ($params as $index => $value) {
+                $stmt->bindValue($index + 1, $value);
+            }
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result['total'] ?? 0;
+        } catch (PDOException $e) {
+            error_log('Database error in getTotal: ' . $e->getMessage());
+            return 0;
+        }
     }
 }
