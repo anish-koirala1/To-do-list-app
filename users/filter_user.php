@@ -40,10 +40,10 @@ if ($format === 'json') {
 
     $pdo  = getDB();
     $stmt = $pdo->prepare(
-        "SELECT user_id, full_name, email, role, is_active, created_date
+        "SELECT id AS user_id, full_name, username, email, role, is_active, created_at AS created_date
          FROM users
          $where
-         ORDER BY created_date DESC
+         ORDER BY created_at DESC
          LIMIT 100"
     );
     $stmt->execute($params);

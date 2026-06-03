@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // Load the shared PDO database connection helper.
 require_once '../config/database.php';
+require_once '../includes/ensure_users_schema.php';
 
 // Read and normalize submitted credentials.
 $email    = trim($_POST['email'] ?? '');
@@ -22,18 +23,8 @@ if (empty($email) || empty($password)) {
     exit;
 }
 
-// Validate email format to avoid unnecessary database work.
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    $_SESSION['login_error'] = 'Please enter a valid email address.';
-    header('Location: login.php');
-    exit;
-}
-
-// Find the user account by email using a prepared statement.
 $pdo  = getDB();
-$stmt = $pdo->prepare('SELECT user_id, full_name, email, password, role, is_active FROM users WHERE email = ?');
-$stmt->execute([$email]);
-$user = $stmt->fetch();
+$user = findUserForLogin($pdo, $email);
 
 // Verify both the account exists and the password matches the stored hash.
 if (!$user || !password_verify($password, $user['password'])) {

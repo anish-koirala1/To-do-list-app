@@ -16,11 +16,13 @@ $allowedRoles = ['Admin', 'Teacher', 'Student'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Keep submitted values so the form can be repopulated after validation errors.
     $old['full_name'] = trim($_POST['full_name'] ?? '');
+    $old['username']  = trim($_POST['username']  ?? '');
     $old['email']     = trim($_POST['email']     ?? '');
     $old['role']      = $_POST['role']            ?? '';
 
     // Copy submitted values into local variables for validation and insert.
     $full_name = $old['full_name'];
+    $username  = $old['username'];
     $email     = $old['email'];
     $password  = $_POST['password']  ?? '';
     $confirm   = $_POST['confirm']   ?? '';
@@ -35,6 +37,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['full_name'] = 'Full name must not contain numbers.';
     }
 
+    /* --- Validate username --- */
+    if ($username === '') {
+        $errors['username'] = 'Username is required.';
+    } elseif (!preg_match('/^[a-zA-Z0-9._-]{3,50}$/', $username)) {
+        $errors['username'] = 'Username must be 3–50 characters (letters, numbers, . _ -).';
+    } else {
+        $pdo  = $pdo ?? getDB();
+        $stmt = $pdo->prepare('SELECT id FROM users WHERE username = ?');
+        $stmt->execute([$username]);
+        if ($stmt->fetch()) {
+            $errors['username'] = 'This username is already taken.';
+        }
+    }
+
     /* --- Validate email --- */
     if ($email === '') {
         $errors['email'] = 'Email is required.';
@@ -45,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         // Check that no existing account already uses this email address.
         $pdo  = getDB();
-        $stmt = $pdo->prepare('SELECT user_id FROM users WHERE email = ?');
+        $stmt = $pdo->prepare('SELECT id FROM users WHERE email = ?');
         $stmt->execute([$email]);
         if ($stmt->fetch()) {
             $errors['email'] = 'This email address is already registered.';
@@ -84,10 +100,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Create the new user as active by default.
         $stmt = $pdo->prepare(
-            'INSERT INTO users (full_name, email, password, role, is_active, created_date)
-             VALUES (?, ?, ?, ?, 1, CURDATE())'
+            'INSERT INTO users (full_name, username, email, password, role, is_active)
+             VALUES (?, ?, ?, ?, ?, 1)'
         );
-        $stmt->execute([$full_name, $email, $hash, $role]);
+        $stmt->execute([$full_name, $username, $email, $hash, $role]);
 
         // Save a success message for the list page after redirect.
         $_SESSION['flash'] = [
@@ -152,6 +168,23 @@ require_once '../includes/header.php';
                 >
                 <?php if (isset($errors['full_name'])): ?>
                     <p class="field-error"><?= htmlspecialchars($errors['full_name']) ?></p>
+                <?php endif; ?>
+            </div>
+
+            <!-- Username input -->
+            <div class="form-group">
+                <label for="username" class="form-label">Username <span style="color:var(--color-danger)">*</span></label>
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    class="form-control <?= isset($errors['username']) ? 'is-invalid' : '' ?>"
+                    value="<?= htmlspecialchars($old['username'] ?? '') ?>"
+                    placeholder="e.g. jane.doe"
+                    maxlength="50"
+                >
+                <?php if (isset($errors['username'])): ?>
+                    <p class="field-error"><?= htmlspecialchars($errors['username']) ?></p>
                 <?php endif; ?>
             </div>
 

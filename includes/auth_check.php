@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/helpers.php';
+
 // Start the session if the current page has not already started it.
 if (session_status() === PHP_SESSION_NONE) {
     session_start();

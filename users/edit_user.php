@@ -23,9 +23,12 @@ if ($userId <= 0) {
 }
 
 // Load the current user details from the database.
-$stmt = $pdo->prepare('SELECT * FROM users WHERE user_id = ?');
+$stmt = $pdo->prepare('SELECT * FROM users WHERE id = ?');
 $stmt->execute([$userId]);
 $user = $stmt->fetch();
+if ($user) {
+    $user['user_id'] = $user['id'] ?? $user['user_id'] ?? $userId;
+}
 
 // If the record no longer exists, show an error on the list page.
 if (!$user) {
@@ -38,6 +41,7 @@ if (!$user) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Normalize submitted values before validation.
     $full_name = trim($_POST['full_name'] ?? '');
+    $username  = trim($_POST['username']  ?? '');
     $email     = trim($_POST['email']     ?? '');
     $role      = $_POST['role']           ?? '';
     $is_active = isset($_POST['is_active']) ? 1 : 0;
@@ -51,6 +55,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['full_name'] = 'Full name must not contain numbers.';
     }
 
+    if ($username === '') {
+        $errors['username'] = 'Username is required.';
+    } elseif (!preg_match('/^[a-zA-Z0-9._-]{3,50}$/', $username)) {
+        $errors['username'] = 'Username must be 3–50 characters (letters, numbers, . _ -).';
+    } else {
+        $dupU = $pdo->prepare('SELECT id FROM users WHERE username = ? AND id != ?');
+        $dupU->execute([$username, $userId]);
+        if ($dupU->fetch()) {
+            $errors['username'] = 'This username is already taken.';
+        }
+    }
+
     /* --- Validate email --- */
     if ($email === '') {
         $errors['email'] = 'Email is required.';
@@ -60,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['email'] = 'Email must not exceed 100 characters.';
     } else {
         // Ensure the new email is not used by a different account.
-        $dup = $pdo->prepare('SELECT user_id FROM users WHERE email = ? AND user_id != ?');
+        $dup = $pdo->prepare('SELECT id FROM users WHERE email = ? AND id != ?');
         $dup->execute([$email, $userId]);
         if ($dup->fetch()) {
             $errors['email'] = 'This email is already used by another account.';
@@ -99,6 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Replace database values with submitted values so the form keeps user input.
         $user = array_merge($user, [
             'full_name' => $full_name,
+            'username'  => $username,
             'email'     => $email,
             'role'      => $role,
             'is_active' => $is_active,
@@ -107,15 +124,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($changePassword) {
             // Update profile fields and replace password with a new bcrypt hash.
             $upd = $pdo->prepare(
-                'UPDATE users SET full_name = ?, email = ?, role = ?, is_active = ?, password = ? WHERE user_id = ?'
+                'UPDATE users SET full_name = ?, username = ?, email = ?, role = ?, is_active = ?, password = ? WHERE id = ?'
             );
-            $upd->execute([$full_name, $email, $role, $is_active, password_hash($new_password, PASSWORD_BCRYPT), $userId]);
+            $upd->execute([$full_name, $username, $email, $role, $is_active, password_hash($new_password, PASSWORD_BCRYPT), $userId]);
         } else {
             // Update profile fields while keeping the existing password unchanged.
             $upd = $pdo->prepare(
-                'UPDATE users SET full_name = ?, email = ?, role = ?, is_active = ? WHERE user_id = ?'
+                'UPDATE users SET full_name = ?, username = ?, email = ?, role = ?, is_active = ? WHERE id = ?'
             );
-            $upd->execute([$full_name, $email, $role, $is_active, $userId]);
+            $upd->execute([$full_name, $username, $email, $role, $is_active, $userId]);
         }
 
         // Save a success message for the list page after redirect.
@@ -184,6 +201,21 @@ require_once '../includes/header.php';
                 >
                 <?php if (isset($errors['full_name'])): ?>
                     <p class="field-error"><?= htmlspecialchars($errors['full_name']) ?></p>
+                <?php endif; ?>
+            </div>
+
+            <div class="form-group">
+                <label for="username" class="form-label">Username <span style="color:var(--color-danger)">*</span></label>
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    class="form-control <?= isset($errors['username']) ? 'is-invalid' : '' ?>"
+                    value="<?= htmlspecialchars($user['username'] ?? '') ?>"
+                    maxlength="50"
+                >
+                <?php if (isset($errors['username'])): ?>
+                    <p class="field-error"><?= htmlspecialchars($errors['username']) ?></p>
                 <?php endif; ?>
             </div>
 

@@ -17,7 +17,7 @@ unset($_SESSION['login_error']);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login &mdash; User Management</title>
+    <title>Login &mdash; APSU</title>
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body class="auth-page">
@@ -33,8 +33,8 @@ unset($_SESSION['login_error']);
             <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
         </svg>
     </div>
-    <h1 class="auth-title">User Management</h1>
-    <p class="auth-subtitle">Sign in to your account</p>
+    <h1 class="auth-title">Student &amp; Staff Portal</h1>
+    <p class="auth-subtitle">Sign in with your university credentials</p>
 
     <!-- Show validation/authentication errors returned by authenticate.php -->
     <?php if ($error): ?>
@@ -45,13 +45,13 @@ unset($_SESSION['login_error']);
     <form action="authenticate.php" method="POST" novalidate>
         <!-- Email field is kept after failed submit when available -->
         <div class="form-group">
-            <label for="email" class="form-label">Email Address</label>
+            <label for="email" class="form-label">Email or Username</label>
             <input
-                type="email"
+                type="text"
                 id="email"
                 name="email"
                 class="form-control"
-                placeholder="admin@example.com"
+                placeholder="admin or admin@example.com"
                 value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
                 required
                 autofocus

@@ -23,7 +23,8 @@ $conditions = [];
 $params     = [];
 
 if ($search !== '') {
-    $conditions[] = '(full_name LIKE ? OR email LIKE ?)';
+    $conditions[] = '(full_name LIKE ? OR email LIKE ? OR username LIKE ?)';
+    $params[]     = '%' . $search . '%';
     $params[]     = '%' . $search . '%';
     $params[]     = '%' . $search . '%';
 }
@@ -49,10 +50,10 @@ $page       = min($page, $totalPages);
 $offset     = ($page - 1) * $perPage;
 
 /* ---- Fetch rows ---- */
-$stmt = $pdo->prepare("SELECT user_id, full_name, email, role, is_active, created_date
+$stmt = $pdo->prepare("SELECT id AS user_id, full_name, username, email, role, is_active, created_at AS created_date
                         FROM users
                         $where
-                        ORDER BY created_date DESC, user_id DESC
+                        ORDER BY created_at DESC, id DESC
                         LIMIT ? OFFSET ?");
 $stmt->execute(array_merge($params, [$perPage, $offset]));
 $users = $stmt->fetchAll();
@@ -93,6 +94,17 @@ require_once '../includes/header.php';
         <?= htmlspecialchars($flash['message']) ?>
     </div>
 <?php endif; ?>
+
+<div class="quick-add-row">
+    <span class="quick-add-label">Modules</span>
+    <a href="../reports/index.php" class="btn btn-outline btn-sm">Reports</a>
+    <a href="../classes/index.php" class="btn btn-outline btn-sm">Classes</a>
+    <a href="../exams/index.php" class="btn btn-outline btn-sm">Exams</a>
+    <a href="../assignments/index.php" class="btn btn-outline btn-sm">Assignments</a>
+    <?php if (isAdmin()): ?>
+    <a href="add_user.php" class="btn btn-primary btn-sm">+ User</a>
+    <?php endif; ?>
+</div>
 
 <!-- Stats -->
 <div class="stats-row">
@@ -180,6 +192,7 @@ require_once '../includes/header.php';
                     <tr>
                         <th>#</th>
                         <th>Name</th>
+                        <th>Username</th>
                         <th>Email</th>
                         <th>Role</th>
                         <th>Status</th>
@@ -196,6 +209,7 @@ require_once '../includes/header.php';
                             <td>
                                 <strong><?= htmlspecialchars($user['full_name']) ?></strong>
                             </td>
+                            <td><?= htmlspecialchars($user['username'] ?? '') ?></td>
                             <td><?= htmlspecialchars($user['email']) ?></td>
                             <td>
                                 <span class="badge badge-<?= strtolower(htmlspecialchars($user['role'])) ?>">

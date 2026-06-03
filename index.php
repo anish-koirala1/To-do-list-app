@@ -11,7 +11,7 @@ if (isset($_SESSION['user_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Management System</title>
+    <title>APSU</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body class="landing-page">
@@ -26,7 +26,7 @@ if (isset($_SESSION['user_id'])) {
                 <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
             </svg>
         </span>
-        UserMgmt
+        APSU
     </a>
     <a href="auth/login.php" class="btn btn-outline btn-sm">Sign In</a>
 </header>
@@ -34,9 +34,9 @@ if (isset($_SESSION['user_id'])) {
 <main class="landing-main">
     <section class="landing-hero">
         <div class="hero-copy">
-            <span class="eyebrow">Simple admin dashboard</span>
-            <h1>User Management System</h1>
-            <p>Manage users, roles, access, and account status from one clean PHP dashboard.</p>
+            <span class="eyebrow">University portal</span>
+            <h1>APSU</h1>
+            <p>Manage users, tasks, assignments, and progress tracking for your institution.</p>
             <div class="hero-actions">
                 <a href="auth/login.php" class="btn btn-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -75,24 +75,28 @@ if (isset($_SESSION['user_id'])) {
         </div>
     </section>
 
-    <section class="landing-features" aria-label="Core features">
+    <section class="landing-features" aria-label="Team modules">
         <article>
-            <strong>Add & edit</strong>
-            <p>Create users and update account details with validation.</p>
+            <strong>User Management</strong>
+            <p>Anish Koirala — login, roles, add/edit/delete users.</p>
         </article>
         <article>
-            <strong>Search & filter</strong>
-            <p>Find users quickly by name, email, role, or status.</p>
+            <strong>Reports &amp; Progress</strong>
+            <p>Utsav Luitel — reports, progress tracking, status updates.</p>
         </article>
         <article>
-            <strong>Secure access</strong>
-            <p>Session login, hashed passwords, and role-based controls.</p>
+            <strong>Classes &amp; Exams</strong>
+            <p>Puskar Bastola — scheduled classes, exams, questions, and attempts.</p>
+        </article>
+        <article>
+            <strong>Assignments</strong>
+            <p>Sunil Kumar BK — assignments, submissions, marking.</p>
         </article>
     </section>
 </main>
 
 <footer class="landing-footer">
-    &copy; <?= date('Y') ?> User Management System
+    &copy; <?= date('Y') ?> APSU
 </footer>
 
 </body>

@@ -31,7 +31,7 @@ if ($userId === (int)$_SESSION['user_id']) {
 }
 
 $pdo  = getDB();
-$stmt = $pdo->prepare('SELECT user_id, full_name, is_active FROM users WHERE user_id = ?');
+$stmt = $pdo->prepare('SELECT id, full_name, is_active FROM users WHERE id = ?');
 $stmt->execute([$userId]);
 $user = $stmt->fetch();
 
@@ -42,7 +42,7 @@ if (!$user) {
 }
 
 $newStatus = $user['is_active'] ? 0 : 1;
-$upd = $pdo->prepare('UPDATE users SET is_active = ? WHERE user_id = ?');
+$upd = $pdo->prepare('UPDATE users SET is_active = ? WHERE id = ?');
 $upd->execute([$newStatus, $userId]);
 
 $action = $newStatus ? 'enabled' : 'disabled';

@@ -2,7 +2,7 @@
 
 <footer class="site-footer">
     <div class="footer-inner">
-        <span>&copy; <?= date('Y') ?> User Management System</span>
+        <span>&copy; <?= date('Y') ?> APSU</span>
     </div>
 </footer>
 

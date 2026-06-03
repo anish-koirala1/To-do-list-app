@@ -31,7 +31,7 @@ if ($userId === (int)$_SESSION['user_id']) {
 }
 
 $pdo  = getDB();
-$stmt = $pdo->prepare('SELECT user_id, full_name FROM users WHERE user_id = ?');
+$stmt = $pdo->prepare('SELECT id, full_name FROM users WHERE id = ?');
 $stmt->execute([$userId]);
 $user = $stmt->fetch();
 
@@ -41,7 +41,7 @@ if (!$user) {
     exit;
 }
 
-$del = $pdo->prepare('DELETE FROM users WHERE user_id = ?');
+$del = $pdo->prepare('DELETE FROM users WHERE id = ?');
 $del->execute([$userId]);
 
 $_SESSION['flash'] = [

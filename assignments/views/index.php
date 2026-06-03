@@ -1,67 +1,33 @@
-<?php
-$pageTitle = 'Assignments';
-$baseUrl = '../../';
-require __DIR__ . '/../../includes/header.php';
-?>
-
+<?php require __DIR__ . '/../../includes/header.php'; ?>
 <div class="page-header">
-    <div>
-        <h1>Assignment List</h1>
-        <p class="page-subtitle">Manage team assignments</p>
-    </div>
+<div><h1 class="page-title">Assignments</h1><p class="page-subtitle">Assignment module (Sunil Kumar BK)</p></div>
+<?php if (isTeacher()): ?><a href="index.php?action=create" class="btn btn-primary">+ Create</a><?php endif; ?>
+<a href="index.php?action=search" class="btn btn-outline">Search</a>
+<a href="index.php?action=filter" class="btn btn-outline">Filter</a>
 </div>
-
-<div class="top-buttons" style="margin-bottom:1.5rem;display:flex;flex-wrap:wrap;gap:10px;align-items:center;">
-    <a href="index.php?action=create" class="btn btn-primary">+ Assign Task</a>
-    <a href="index.php?action=search" class="btn btn-outline">Search</a>
-
-    <form action="index.php" method="GET" class="filter-form" style="display:flex;flex-wrap:wrap;gap:8px;margin-left:auto;">
-        <input type="hidden" name="action" value="filter">
-        <select name="status" class="form-control" style="width:auto;">
-            <option value="">All Status</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Pending">Pending</option>
-            <option value="Completed">Completed</option>
-        </select>
-        <input type="date" name="from_date" class="form-control" style="width:auto;">
-        <input type="date" name="to_date" class="form-control" style="width:auto;">
-        <button type="submit" class="btn btn-primary">Filter</button>
-    </form>
-</div>
-
-<div class="table-card">
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Task Name</th>
-                <th>Assigned To</th>
-                <th>Due Date</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        <?php if (empty($assignments)): ?>
-            <tr><td colspan="6" class="text-center text-muted">No assignments yet.</td></tr>
-        <?php else: ?>
-            <?php foreach ($assignments as $assignment): ?>
-            <tr>
-                <td><?= (int)$assignment['id'] ?></td>
-                <td><?= htmlspecialchars($assignment['task_name']) ?></td>
-                <td><?= htmlspecialchars($assignment['assigned_to']) ?></td>
-                <td><?= htmlspecialchars($assignment['due_date']) ?></td>
-                <td><?= htmlspecialchars($assignment['status']) ?></td>
-                <td>
-                    <a class="btn btn-sm btn-outline" href="index.php?action=edit&id=<?= (int)$assignment['id'] ?>">Edit</a>
-                    <a class="btn btn-sm btn-danger" href="index.php?action=delete&id=<?= (int)$assignment['id'] ?>"
-                       onclick="return confirm('Delete this assignment?')">Delete</a>
-                </td>
-            </tr>
-            <?php endforeach; ?>
-        <?php endif; ?>
-        </tbody>
-    </table>
-</div>
-
+<?php if (!empty($flash)): ?><div class="alert alert-<?= htmlspecialchars($flash['type']) ?>"><?= htmlspecialchars($flash['message']) ?></div><?php endif; ?>
+<div class="table-card"><table class="data-table">
+<thead><tr><th>ID</th><th>Title</th><th>Subject</th><th>Teacher</th><th>Due</th><th>Status</th><th>Actions</th></tr></thead>
+<tbody>
+<?php foreach ($items as $a): ?>
+<tr>
+<td><?= (int)$a['id'] ?></td>
+<td><?= htmlspecialchars($a['title']) ?></td>
+<td><?= htmlspecialchars($a['subject']) ?></td>
+<td><?= htmlspecialchars($a['teacher_name']) ?></td>
+<td><?= htmlspecialchars($a['due_date']) ?></td>
+<td><?= htmlspecialchars($a['status']) ?></td>
+<td>
+<?php if (isStudent() && $a['status'] === 'Open'): ?>
+<a href="index.php?action=submit&id=<?= (int)$a['id'] ?>" class="btn btn-sm btn-primary">Submit</a>
+<?php endif; ?>
+<?php if (isTeacher()): ?>
+<a href="index.php?action=submissions&id=<?= (int)$a['id'] ?>" class="btn btn-sm btn-outline">Submissions</a>
+<a href="index.php?action=edit&id=<?= (int)$a['id'] ?>" class="btn btn-sm btn-outline">Edit</a>
+<a href="index.php?action=delete&id=<?= (int)$a['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete?')">Delete</a>
+<?php endif; ?>
+</td>
+</tr>
+<?php endforeach; ?>
+</tbody></table></div>
 <?php require __DIR__ . '/../../includes/footer.php'; ?>

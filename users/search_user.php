@@ -23,7 +23,7 @@ if ($format === 'json') {
 
     $pdo  = getDB();
     $stmt = $pdo->prepare(
-        'SELECT user_id, full_name, email, role, is_active
+        'SELECT id AS user_id, full_name, username, email, role, is_active
          FROM users
          WHERE full_name LIKE ? OR email LIKE ?
          ORDER BY full_name ASC
