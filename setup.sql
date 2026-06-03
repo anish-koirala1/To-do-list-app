@@ -28,3 +28,33 @@ INSERT INTO users (full_name, email, password, role, is_active, created_date) VA
     TRUE,
     CURDATE()
 );
+
+-- Tasks module (from task_mangement branch)
+CREATE TABLE IF NOT EXISTS tasks (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    priority ENUM('Low', 'Medium', 'High') DEFAULT 'Medium',
+    status ENUM('To Do', 'In Progress', 'Done') DEFAULT 'To Do',
+    due_date DATE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_status (status),
+    INDEX idx_priority (priority),
+    INDEX idx_due_date (due_date)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO tasks (title, priority, status, due_date) VALUES
+('Complete project documentation', 'High', 'In Progress', '2026-06-10'),
+('Review team pull requests', 'Medium', 'To Do', '2026-06-05'),
+('Fix database connection issue', 'High', 'Done', '2026-06-01');
+
+-- Assignments module (from assignment-module branch)
+CREATE TABLE IF NOT EXISTS assignments (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    task_name VARCHAR(255) NOT NULL,
+    assigned_to VARCHAR(255) NOT NULL,
+    due_date DATE NOT NULL,
+    status VARCHAR(50) NOT NULL DEFAULT 'Pending',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
