@@ -4,7 +4,7 @@ session_start();
 
 // If the user is already logged in, skip the login screen and open the dashboard.
 if (isset($_SESSION['user_id'])) {
-    header('Location: ../users/list_users.php');
+    header('Location: ../dashboard/index.php');
     exit;
 }
 

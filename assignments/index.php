@@ -8,12 +8,14 @@ $pdo = getDB();
 $model = new Assignment($pdo);
 $action = $_GET['action'] ?? 'index';
 
-if ($action === 'delete' && isset($_GET['id']) && isTeacher()) {
+if ($action === 'delete' && isset($_GET['id'])) {
+    requireStaff();
     $model->delete((int)$_GET['id']);
     redirectWithFlash('index.php', 'success', 'Assignment deleted.');
 }
 
-if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST' && isTeacher()) {
+if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    requireStaff();
     $model->create([
         'teacher_id' => currentUserId(),
         'title' => trim($_POST['title'] ?? ''),
@@ -25,7 +27,8 @@ if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST' && isTeacher()
     redirectWithFlash('index.php', 'success', 'Assignment created.');
 }
 
-if ($action === 'edit' && isset($_GET['id']) && isTeacher()) {
+if ($action === 'edit' && isset($_GET['id'])) {
+    requireStaff();
     $id = (int)$_GET['id'];
     $row = $model->getById($id);
     if (!$row) redirectWithFlash('index.php', 'error', 'Not found.');
@@ -57,7 +60,8 @@ if ($action === 'submit' && isset($_GET['id']) && isStudent()) {
     exit;
 }
 
-if ($action === 'submissions' && isset($_GET['id']) && isTeacher()) {
+if ($action === 'submissions' && isset($_GET['id'])) {
+    requireStaff();
     $pageTitle = 'Submissions';
     $assignment = $model->getById((int)$_GET['id']);
     $submissions = $model->submissionsForAssignment((int)$_GET['id']);
@@ -65,7 +69,8 @@ if ($action === 'submissions' && isset($_GET['id']) && isTeacher()) {
     exit;
 }
 
-if ($action === 'mark' && isset($_GET['sid']) && isTeacher()) {
+if ($action === 'mark' && isset($_GET['sid'])) {
+    requireStaff();
     $sid = (int)$_GET['sid'];
     $sub = $model->getSubmission($sid);
     if (!$sub) redirectWithFlash('index.php', 'error', 'Not found.');
@@ -93,7 +98,8 @@ if ($action === 'filter') {
     exit;
 }
 
-if ($action === 'create' && isTeacher()) {
+if ($action === 'create') {
+    requireStaff();
     $pageTitle = 'Create Assignment';
     $row = ['title' => '', 'subject' => '', 'assign_date' => date('Y-m-d'), 'due_date' => date('Y-m-d'), 'status' => 'Open'];
     require __DIR__ . '/views/form.php';

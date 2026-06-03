@@ -7,6 +7,7 @@
  * Can also be used as an AJAX endpoint returning JSON.
  */
 require_once '../includes/auth_check.php';
+requireAdmin();
 require_once '../config/database.php';
 
 $query  = trim($_GET['q'] ?? $_GET['search'] ?? '');

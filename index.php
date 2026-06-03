@@ -2,7 +2,7 @@
 session_start();
 
 if (isset($_SESSION['user_id'])) {
-    header('Location: users/list_users.php');
+    header('Location: dashboard/index.php');
     exit;
 }
 ?>
@@ -11,7 +11,7 @@ if (isset($_SESSION['user_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>APSU</title>
+    <title>APSU — Academic Portal</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body class="landing-page">
@@ -34,43 +34,55 @@ if (isset($_SESSION['user_id'])) {
 <main class="landing-main">
     <section class="landing-hero">
         <div class="hero-copy">
-            <span class="eyebrow">University portal</span>
-            <h1>APSU</h1>
-            <p>Manage users, tasks, assignments, and progress tracking for your institution.</p>
+            <span class="eyebrow">Academic Portal System for University</span>
+            <h1>One portal.<br>Three roles.</h1>
+            <p>Administrators manage accounts. Teachers schedule classes, reports, and exams. Students view their schedule and complete assignments and exams.</p>
             <div class="hero-actions">
-                <a href="auth/login.php" class="btn btn-primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-                        <polyline points="10 17 15 12 10 7"></polyline>
-                        <line x1="15" y1="12" x2="3" y2="12"></line>
-                    </svg>
-                    Open Dashboard
-                </a>
+                <a href="auth/login.php" class="btn btn-primary">Sign in to your portal</a>
+            </div>
+            <div class="landing-role-hints">
+                <span><strong>Admin</strong> — users</span>
+                <span><strong>Teacher</strong> — academics</span>
+                <span><strong>Student</strong> — tasks only</span>
             </div>
         </div>
 
-        <div class="hero-panel" aria-label="Dashboard preview">
+        <div class="hero-panel landing-role-panel" aria-label="Role portals">
             <div class="panel-top">
-                <span></span>
-                <span></span>
-                <span></span>
+                <span></span><span></span><span></span>
             </div>
-            <div class="preview-title">
-                <div>
-                    <strong>All Users</strong>
-                    <small>Today overview</small>
+            <div class="role-portal role-portal-admin">
+                <div class="role-portal-head">
+                    <span class="role-portal-badge badge-admin">Admin</span>
+                    <strong>Control centre</strong>
                 </div>
-                <span class="badge badge-active">Live</span>
+                <ul>
+                    <li>User accounts &amp; roles</li>
+                    <li>Enable / disable access</li>
+                    <li>Oversee all modules</li>
+                </ul>
             </div>
-            <div class="preview-stats">
-                <div><span>128</span><small>Total</small></div>
-                <div><span>112</span><small>Active</small></div>
-                <div><span>16</span><small>Disabled</small></div>
+            <div class="role-portal role-portal-teacher">
+                <div class="role-portal-head">
+                    <span class="role-portal-badge badge-teacher">Teacher</span>
+                    <strong>Faculty workspace</strong>
+                </div>
+                <ul>
+                    <li>Reports &amp; progress</li>
+                    <li>Schedule classes &amp; exams</li>
+                    <li>Assignments &amp; marking</li>
+                </ul>
             </div>
-            <div class="preview-list">
-                <div><span class="avatar">A</span><p>Admin User</p><small>Admin</small></div>
-                <div><span class="avatar">T</span><p>Teacher User</p><small>Teacher</small></div>
-                <div><span class="avatar">S</span><p>Student User</p><small>Student</small></div>
+            <div class="role-portal role-portal-student">
+                <div class="role-portal-head">
+                    <span class="role-portal-badge badge-student">Student</span>
+                    <strong>Learning hub</strong>
+                </div>
+                <ul>
+                    <li>View schedule &amp; reports</li>
+                    <li>Take exams</li>
+                    <li>Submit assignments</li>
+                </ul>
             </div>
         </div>
     </section>
@@ -78,25 +90,25 @@ if (isset($_SESSION['user_id'])) {
     <section class="landing-features" aria-label="Team modules">
         <article>
             <strong>User Management</strong>
-            <p>Anish Koirala — login, roles, add/edit/delete users.</p>
+            <p>Anish Koirala — Admin only: login, roles, user CRUD.</p>
         </article>
         <article>
             <strong>Reports &amp; Progress</strong>
-            <p>Utsav Luitel — reports, progress tracking, status updates.</p>
+            <p>Utsav Luitel — Teachers create; students view their reports.</p>
         </article>
         <article>
             <strong>Classes &amp; Exams</strong>
-            <p>Puskar Bastola — scheduled classes, exams, questions, and attempts.</p>
+            <p>Puskar Bastola — Teachers schedule; students view &amp; take exams.</p>
         </article>
         <article>
             <strong>Assignments</strong>
-            <p>Sunil Kumar BK — assignments, submissions, marking.</p>
+            <p>Sunil Kumar BK — Teachers publish; students submit work.</p>
         </article>
     </section>
 </main>
 
 <footer class="landing-footer">
-    &copy; <?= date('Y') ?> APSU
+    &copy; <?= date('Y') ?> APSU — Academic Portal System for University
 </footer>
 
 </body>

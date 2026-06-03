@@ -1312,3 +1312,154 @@ select.form-control { cursor: pointer; }
     .stats-row { grid-template-columns: 1fr; }
     .site-nav { overflow-x: auto; padding-bottom: 2px; }
 }
+
+/* Role dashboards */
+.role-dashboard { max-width: 1100px; margin: 0 auto; }
+
+.dash-welcome { margin-bottom: 28px; }
+
+.dash-welcome .page-title {
+    margin-bottom: 8px;
+    border-left: none;
+    padding-left: 0;
+}
+
+.dash-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 18px;
+    margin-bottom: 24px;
+}
+
+.dash-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 22px 24px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-sm);
+    text-decoration: none;
+    color: inherit;
+    transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+}
+
+.dash-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow);
+    border-color: var(--color-gold);
+    text-decoration: none;
+}
+
+.dash-card-primary {
+    border-top: 4px solid var(--color-navy);
+}
+
+.dash-card-accent {
+    border-top: 4px solid var(--color-gold-bright);
+}
+
+.dash-icon { font-size: 1.6rem; line-height: 1; }
+
+.dash-card strong {
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    color: var(--color-navy);
+}
+
+.dash-card p {
+    flex: 1;
+    margin: 0;
+    font-size: .9rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+}
+
+.dash-cta {
+    font-size: .8rem;
+    font-weight: 700;
+    color: var(--color-navy-light);
+    letter-spacing: .02em;
+}
+
+.dash-note .card-body p {
+    margin: 0;
+    font-size: .92rem;
+    color: var(--color-text-muted);
+}
+
+.role-dashboard-admin .dash-welcome .eyebrow { background: var(--color-primary-lt); }
+.role-dashboard-teacher .dash-welcome .eyebrow { background: var(--color-info-lt); color: var(--color-info); }
+.role-dashboard-student .dash-welcome .eyebrow { background: var(--color-gold-light); }
+
+.app-role-admin .main-content { background: linear-gradient(180deg, rgba(0, 40, 85, .03), transparent 200px); }
+.app-role-teacher .main-content { background: linear-gradient(180deg, rgba(30, 64, 175, .04), transparent 200px); }
+.app-role-student .main-content { background: linear-gradient(180deg, rgba(184, 134, 11, .06), transparent 200px); }
+
+.role-tag-admin { background: var(--color-navy) !important; color: #fff !important; border-color: var(--color-navy) !important; }
+.role-tag-teacher { background: var(--color-info) !important; color: #fff !important; }
+.role-tag-student { background: var(--color-gold) !important; color: var(--color-navy) !important; }
+
+/* Landing — three role portals */
+.landing-role-hints {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+    margin-top: 22px;
+    font-size: .88rem;
+    color: var(--color-text-muted);
+}
+
+.landing-role-hints strong { color: var(--color-navy); }
+
+.landing-role-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.landing-role-panel .panel-top { flex-shrink: 0; }
+
+.role-portal {
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.role-portal:last-child { border-bottom: 0; }
+
+.role-portal-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.role-portal-head strong {
+    font-family: var(--font-serif);
+    color: var(--color-navy);
+}
+
+.role-portal-badge {
+    font-size: .65rem;
+    padding: 3px 10px;
+}
+
+.role-portal ul {
+    margin: 0;
+    padding-left: 18px;
+    font-size: .88rem;
+    color: var(--color-text-muted);
+    line-height: 1.55;
+}
+
+.role-portal-admin { background: linear-gradient(90deg, rgba(0, 40, 85, .04), transparent); }
+.role-portal-teacher { background: linear-gradient(90deg, rgba(30, 64, 175, .05), transparent); }
+.role-portal-student { background: linear-gradient(90deg, rgba(184, 134, 11, .08), transparent); }
+
+.hero-copy h1 {
+    font-family: var(--font-serif);
+    color: var(--color-navy);
+    font-weight: 700;
+    line-height: 1.1;
+}

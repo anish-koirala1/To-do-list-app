@@ -1,11 +1,25 @@
 <?php require __DIR__ . '/../../includes/header.php'; ?>
 <div class="page-header">
-<div><h1 class="page-title">Assignments</h1><p class="page-subtitle">Assignment module (Sunil Kumar BK)</p></div>
-<?php if (isTeacher()): ?><a href="index.php?action=create" class="btn btn-primary">+ Create</a><?php endif; ?>
+<div>
+    <h1 class="page-title"><?= isStudent() ? 'My Assignments' : 'Assignments' ?></h1>
+    <p class="page-subtitle">
+        <?php if (isStudent()): ?>
+        Submit work for open assignments — no create or delete.
+        <?php else: ?>
+        Assignment module — publish, review submissions, and mark (Sunil Kumar BK).
+        <?php endif; ?>
+    </p>
+</div>
+<?php if (canManageAcademics()): ?>
+    <a href="index.php?action=create" class="btn btn-primary">+ Create</a>
+<?php endif; ?>
+<?php if (!isStudent()): ?>
 <a href="index.php?action=search" class="btn btn-outline">Search</a>
 <a href="index.php?action=filter" class="btn btn-outline">Filter</a>
+<?php endif; ?>
 </div>
 <?php if (!empty($flash)): ?><div class="alert alert-<?= htmlspecialchars($flash['type']) ?>"><?= htmlspecialchars($flash['message']) ?></div><?php endif; ?>
+<?php if (isStudent()): ?><div class="alert alert-info">Select <strong>Submit</strong> on an open assignment to hand in your work.</div><?php endif; ?>
 <div class="table-card"><table class="data-table">
 <thead><tr><th>ID</th><th>Title</th><th>Subject</th><th>Teacher</th><th>Due</th><th>Status</th><th>Actions</th></tr></thead>
 <tbody>
@@ -20,8 +34,10 @@
 <td>
 <?php if (isStudent() && $a['status'] === 'Open'): ?>
 <a href="index.php?action=submit&id=<?= (int)$a['id'] ?>" class="btn btn-sm btn-primary">Submit</a>
+<?php elseif (isStudent()): ?>
+<span class="text-muted">—</span>
 <?php endif; ?>
-<?php if (isTeacher()): ?>
+<?php if (canManageAcademics()): ?>
 <a href="index.php?action=submissions&id=<?= (int)$a['id'] ?>" class="btn btn-sm btn-outline">Submissions</a>
 <a href="index.php?action=edit&id=<?= (int)$a['id'] ?>" class="btn btn-sm btn-outline">Edit</a>
 <a href="index.php?action=delete&id=<?= (int)$a['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete?')">Delete</a>

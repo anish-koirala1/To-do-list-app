@@ -48,6 +48,6 @@ $_SESSION['user_id']   = $user['user_id'];
 $_SESSION['full_name'] = $user['full_name'];
 $_SESSION['role']      = $user['role'];
 
-// Send the authenticated user to the main dashboard.
-header('Location: ../users/list_users.php');
+// Send the user to their role-specific dashboard.
+header('Location: ../dashboard/index.php');
 exit;

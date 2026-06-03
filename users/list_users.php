@@ -1,5 +1,7 @@
 <?php
 require_once '../includes/auth_check.php';
+require_once '../includes/helpers.php';
+requireAdmin();
 require_once '../config/database.php';
 
 $pageTitle = 'All Users';
@@ -79,7 +81,7 @@ require_once '../includes/header.php';
 <div class="page-header">
     <div>
         <h1 class="page-title">All Users</h1>
-        <p class="page-subtitle">Manage and monitor all registered accounts</p>
+        <p class="page-subtitle">Administrator only — manage and monitor all registered accounts</p>
     </div>
     <?php if (isAdmin()): ?>
     <a href="add_user.php" class="btn btn-primary">
@@ -96,7 +98,8 @@ require_once '../includes/header.php';
 <?php endif; ?>
 
 <div class="quick-add-row">
-    <span class="quick-add-label">Modules</span>
+    <span class="quick-add-label">Quick links</span>
+    <a href="../dashboard/index.php" class="btn btn-outline btn-sm">Dashboard</a>
     <a href="../reports/index.php" class="btn btn-outline btn-sm">Reports</a>
     <a href="../classes/index.php" class="btn btn-outline btn-sm">Classes</a>
     <a href="../exams/index.php" class="btn btn-outline btn-sm">Exams</a>

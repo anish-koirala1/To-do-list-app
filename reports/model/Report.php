@@ -9,10 +9,14 @@ class Report
         $this->pdo = $pdo;
     }
 
-    public function getAll(?string $search = null, ?string $status = null, ?string $priority = null): array
+    public function getAll(?string $search = null, ?string $status = null, ?string $priority = null, ?int $userId = null): array
     {
         $sql = 'SELECT r.*, u.full_name AS owner_name FROM reports r JOIN users u ON r.user_id = u.id WHERE 1=1';
         $params = [];
+        if ($userId !== null) {
+            $sql .= ' AND r.user_id = ?';
+            $params[] = $userId;
+        }
         if ($search) {
             $sql .= ' AND (r.title LIKE ? OR r.subject LIKE ?)';
             $params[] = "%$search%";

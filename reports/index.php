@@ -10,6 +10,9 @@ $action = $_GET['action'] ?? 'index';
 $baseUrl = '../';
 
 if ($action === 'track') {
+    if (isStudent()) {
+        redirectWithFlash('index.php', 'error', 'Progress tracking is for teachers and administrators.');
+    }
     $pageTitle = 'Track Progress';
     $stats = $model->progressStats();
     $reports = $model->getAll();
@@ -18,11 +21,13 @@ if ($action === 'track') {
 }
 
 if ($action === 'delete' && isset($_GET['id'])) {
+    requireStaff();
     $model->delete((int)$_GET['id']);
     redirectWithFlash('index.php', 'success', 'Report deleted.');
 }
 
 if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    requireStaff();
     $model->create([
         'user_id' => currentUserId(),
         'title' => trim($_POST['title'] ?? ''),
@@ -36,6 +41,7 @@ if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 if ($action === 'edit' && isset($_GET['id'])) {
+    requireStaff();
     $id = (int)$_GET['id'];
     $report = $model->getById($id);
     if (!$report) {
@@ -58,6 +64,7 @@ if ($action === 'edit' && isset($_GET['id'])) {
 }
 
 if ($action === 'create') {
+    requireStaff();
     $pageTitle = 'Create Report';
     $report = ['title' => '', 'subject' => '', 'priority' => 'Medium', 'assign_date' => date('Y-m-d'), 'due_date' => date('Y-m-d'), 'status' => 'Pending'];
     require __DIR__ . '/views/form.php';
@@ -68,7 +75,8 @@ $pageTitle = 'Reports';
 $search = trim($_GET['search'] ?? '');
 $status = $_GET['status'] ?? '';
 $priority = $_GET['priority'] ?? '';
-$reports = $model->getAll($search ?: null, $status ?: null, $priority ?: null);
+$ownerId = isStudent() ? currentUserId() : null;
+$reports = $model->getAll($search ?: null, $status ?: null, $priority ?: null, $ownerId);
 $flash = $_SESSION['flash'] ?? null;
 unset($_SESSION['flash']);
 require __DIR__ . '/views/index.php';

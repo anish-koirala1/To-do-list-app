@@ -9,12 +9,14 @@ $exam = new Exam($pdo);
 $action = $_GET['action'] ?? 'index';
 $classId = isset($_GET['class_id']) ? (int)$_GET['class_id'] : null;
 
-if ($action === 'delete' && isset($_GET['id']) && isTeacher()) {
+if ($action === 'delete' && isset($_GET['id'])) {
+    requireStaff();
     $exam->delete((int)$_GET['id']);
     redirectWithFlash('index.php' . ($classId ? "?class_id=$classId" : ''), 'success', 'Exam deleted.');
 }
 
-if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST' && isTeacher()) {
+if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    requireStaff();
     $exam->create([
         'scheduled_class_id' => (int)($_POST['scheduled_class_id'] ?? 0) ?: null,
         'user_id' => currentUserId(),
@@ -25,7 +27,8 @@ if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST' && isTeacher()
     redirectWithFlash('index.php', 'success', 'Exam created.');
 }
 
-if ($action === 'add_question' && isset($_GET['exam_id']) && isTeacher()) {
+if ($action === 'add_question' && isset($_GET['exam_id'])) {
+    requireStaff();
     $eid = (int)$_GET['exam_id'];
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $exam->addQuestion([
@@ -43,6 +46,7 @@ if ($action === 'add_question' && isset($_GET['exam_id']) && isTeacher()) {
 }
 
 if ($action === 'questions' && isset($_GET['exam_id'])) {
+    requireStaff();
     $eid = (int)$_GET['exam_id'];
     $pageTitle = 'Exam Questions';
     $questions = $exam->getQuestions($eid);
@@ -52,6 +56,9 @@ if ($action === 'questions' && isset($_GET['exam_id'])) {
 }
 
 if ($action === 'take' && isset($_GET['exam_id'])) {
+    if (!isStudent()) {
+        redirectWithFlash('index.php', 'error', 'Only students can take exams.');
+    }
     $eid = (int)$_GET['exam_id'];
     $questions = $exam->getQuestions($eid);
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -74,7 +81,8 @@ if ($action === 'attempts') {
     exit;
 }
 
-if ($action === 'create' && isTeacher()) {
+if ($action === 'create') {
+    requireStaff();
     $pageTitle = 'Create Exam';
     $classes = $exam->classOptions();
     require __DIR__ . '/views/form.php';

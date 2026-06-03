@@ -10,14 +10,16 @@ $action = $_GET['action'] ?? 'index';
 $uid = isStudent() ? currentUserId() : null;
 
 if ($action === 'delete' && isset($_GET['id'])) {
+    requireStaff();
     $model->delete((int)$_GET['id']);
     redirectWithFlash('index.php', 'success', 'Class deleted.');
 }
 
 if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    requireStaff();
     $model->create([
         'report_id' => (int)($_POST['report_id'] ?? 0) ?: null,
-        'user_id' => isStudent() ? currentUserId() : (int)($_POST['user_id'] ?? currentUserId()),
+        'user_id' => (int)($_POST['user_id'] ?? currentUserId()),
         'title' => trim($_POST['title'] ?? ''),
         'instructor' => trim($_POST['instructor'] ?? ''),
         'classroom' => trim($_POST['classroom'] ?? ''),
@@ -28,6 +30,7 @@ if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 if ($action === 'edit' && isset($_GET['id'])) {
+    requireStaff();
     $id = (int)$_GET['id'];
     $row = $model->getById($id);
     if (!$row) redirectWithFlash('index.php', 'error', 'Class not found.');
@@ -49,6 +52,7 @@ if ($action === 'edit' && isset($_GET['id'])) {
 }
 
 if ($action === 'create') {
+    requireStaff();
     $pageTitle = 'Schedule Class';
     $row = ['report_id' => '', 'title' => '', 'instructor' => '', 'classroom' => '', 'start_time' => '', 'end_time' => ''];
     $reports = $model->reportOptions();
