@@ -1,19 +1,25 @@
 <?php
+// Require a logged-in user and limit this page to administrators only.
 require_once '../includes/auth_check.php';
 requireAdmin();
+
+// Load database helper for duplicate email checks and inserting new users.
 require_once '../config/database.php';
 
+// Page state used by the layout and form validation.
 $pageTitle    = 'Add User';
 $errors       = [];
 $old          = [];
 $allowedRoles = ['Admin', 'Teacher', 'Student'];
 
-/* ---- Handle POST ---- */
+/* ---- Handle form submission ---- */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Keep submitted values so the form can be repopulated after validation errors.
     $old['full_name'] = trim($_POST['full_name'] ?? '');
     $old['email']     = trim($_POST['email']     ?? '');
     $old['role']      = $_POST['role']            ?? '';
 
+    // Copy submitted values into local variables for validation and insert.
     $full_name = $old['full_name'];
     $email     = $old['email'];
     $password  = $_POST['password']  ?? '';
@@ -25,6 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['full_name'] = 'Full name is required.';
     } elseif (mb_strlen($full_name) > 100) {
         $errors['full_name'] = 'Full name must not exceed 100 characters.';
+    } elseif (preg_match('/\d/', $full_name)) {
+        $errors['full_name'] = 'Full name must not contain numbers.';
     }
 
     /* --- Validate email --- */
@@ -35,6 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (mb_strlen($email) > 100) {
         $errors['email'] = 'Email must not exceed 100 characters.';
     } else {
+        // Check that no existing account already uses this email address.
         $pdo  = getDB();
         $stmt = $pdo->prepare('SELECT user_id FROM users WHERE email = ?');
         $stmt->execute([$email]);
@@ -67,32 +76,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     /* --- Insert if no errors --- */
     if (empty($errors)) {
+        // Reuse the existing connection if the duplicate email check already opened one.
         $pdo  = $pdo ?? getDB();
+
+        // Store a bcrypt hash instead of the plain password.
         $hash = password_hash($password, PASSWORD_BCRYPT);
+
+        // Create the new user as active by default.
         $stmt = $pdo->prepare(
             'INSERT INTO users (full_name, email, password, role, is_active, created_date)
              VALUES (?, ?, ?, ?, 1, CURDATE())'
         );
         $stmt->execute([$full_name, $email, $hash, $role]);
 
+        // Save a success message for the list page after redirect.
         $_SESSION['flash'] = [
             'type'    => 'success',
             'message' => 'User "' . $full_name . '" was added successfully.',
         ];
+
+        // Redirect after POST to avoid duplicate form submissions on refresh.
         header('Location: list_users.php');
         exit;
     }
 }
 
+// Render the shared authenticated page header.
 require_once '../includes/header.php';
 ?>
 
+<!-- Breadcrumb navigation back to the user list -->
 <nav class="breadcrumb">
     <a href="list_users.php">All Users</a>
     <span class="breadcrumb-sep">/</span>
     <span>Add User</span>
 </nav>
 
+<!-- Page heading and back action -->
 <div class="page-header">
     <div>
         <h1 class="page-title">Add New User</h1>
@@ -104,17 +124,20 @@ require_once '../includes/header.php';
     </a>
 </div>
 
+<!-- User creation form -->
 <div class="card form-card">
     <div class="card-header">
         <h2 class="card-title">User Details</h2>
     </div>
     <div class="card-body">
+        <!-- General validation summary -->
         <?php if ($errors): ?>
             <div class="alert alert-error">Please fix the errors below before submitting.</div>
         <?php endif; ?>
 
         <form method="POST" action="add_user.php" novalidate>
 
+            <!-- Full name input -->
             <div class="form-group">
                 <label for="full_name" class="form-label">Full Name <span style="color:var(--color-danger)">*</span></label>
                 <input
@@ -132,6 +155,7 @@ require_once '../includes/header.php';
                 <?php endif; ?>
             </div>
 
+            <!-- Email input -->
             <div class="form-group">
                 <label for="email" class="form-label">Email Address <span style="color:var(--color-danger)">*</span></label>
                 <input
@@ -148,6 +172,7 @@ require_once '../includes/header.php';
                 <?php endif; ?>
             </div>
 
+            <!-- Password and confirmation fields -->
             <div class="form-row">
                 <div class="form-group">
                     <label for="password" class="form-label">Password <span style="color:var(--color-danger)">*</span></label>
@@ -192,6 +217,7 @@ require_once '../includes/header.php';
                 </div>
             </div>
 
+            <!-- Role selection -->
             <div class="form-group">
                 <label for="role" class="form-label">Role <span style="color:var(--color-danger)">*</span></label>
                 <select id="role" name="role" class="form-control <?= isset($errors['role']) ? 'is-invalid' : '' ?>">
@@ -207,6 +233,7 @@ require_once '../includes/header.php';
                 <?php endif; ?>
             </div>
 
+            <!-- Submit and cancel actions -->
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>

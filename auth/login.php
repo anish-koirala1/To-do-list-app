@@ -1,11 +1,14 @@
 <?php
+// Start the session so we can read login state and one-time error messages.
 session_start();
 
+// If the user is already logged in, skip the login screen and open the dashboard.
 if (isset($_SESSION['user_id'])) {
     header('Location: ../users/list_users.php');
     exit;
 }
 
+// Pull the login error from the session, then clear it so it only shows once.
 $error = $_SESSION['login_error'] ?? '';
 unset($_SESSION['login_error']);
 ?>
@@ -19,7 +22,9 @@ unset($_SESSION['login_error']);
 </head>
 <body class="auth-page">
 
+<!-- Login card wrapper -->
 <div class="auth-card">
+    <!-- App icon shown above the login title -->
     <div class="auth-logo">
         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -31,11 +36,14 @@ unset($_SESSION['login_error']);
     <h1 class="auth-title">User Management</h1>
     <p class="auth-subtitle">Sign in to your account</p>
 
+    <!-- Show validation/authentication errors returned by authenticate.php -->
     <?php if ($error): ?>
         <div class="alert alert-error"><?= htmlspecialchars($error) ?></div>
     <?php endif; ?>
 
+    <!-- Login form submits credentials to the authentication handler -->
     <form action="authenticate.php" method="POST" novalidate>
+        <!-- Email field is kept after failed submit when available -->
         <div class="form-group">
             <label for="email" class="form-label">Email Address</label>
             <input
@@ -50,6 +58,7 @@ unset($_SESSION['login_error']);
             >
         </div>
 
+        <!-- Password field includes a JavaScript visibility toggle -->
         <div class="form-group">
             <label for="password" class="form-label">Password</label>
             <div class="input-wrapper">
@@ -70,10 +79,12 @@ unset($_SESSION['login_error']);
             </div>
         </div>
 
+        <!-- Submit the form for server-side authentication -->
         <button type="submit" class="btn btn-primary btn-block">Sign In</button>
     </form>
 </div>
 
+<!-- Shared JavaScript for password toggle and UI helpers -->
 <script src="../assets/js/main.js"></script>
 </body>
 </html>

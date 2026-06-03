@@ -1,25 +1,33 @@
 <?php
+// Require a logged-in administrator before allowing user updates.
 require_once '../includes/auth_check.php';
 requireAdmin();
+
+// Load database helper for reading and updating the selected user.
 require_once '../config/database.php';
 
+// Page state used by the layout, database, and validation.
 $pageTitle    = 'Edit User';
 $pdo          = getDB();
 $errors       = [];
 $allowedRoles = ['Admin', 'Teacher', 'Student'];
 
 /* ---- Fetch existing user ---- */
+// Accept the user ID from GET for first load or POST for form submission.
 $userId = (int)($_GET['id'] ?? $_POST['user_id'] ?? 0);
 
+// Redirect if no valid user ID was supplied.
 if ($userId <= 0) {
     header('Location: list_users.php');
     exit;
 }
 
+// Load the current user details from the database.
 $stmt = $pdo->prepare('SELECT * FROM users WHERE user_id = ?');
 $stmt->execute([$userId]);
 $user = $stmt->fetch();
 
+// If the record no longer exists, show an error on the list page.
 if (!$user) {
     $_SESSION['flash'] = ['type' => 'error', 'message' => 'User not found.'];
     header('Location: list_users.php');
@@ -28,6 +36,7 @@ if (!$user) {
 
 /* ---- Handle POST ---- */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Normalize submitted values before validation.
     $full_name = trim($_POST['full_name'] ?? '');
     $email     = trim($_POST['email']     ?? '');
     $role      = $_POST['role']           ?? '';
@@ -38,6 +47,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['full_name'] = 'Full name is required.';
     } elseif (mb_strlen($full_name) > 100) {
         $errors['full_name'] = 'Full name must not exceed 100 characters.';
+    } elseif (preg_match('/\d/', $full_name)) {
+        $errors['full_name'] = 'Full name must not contain numbers.';
     }
 
     /* --- Validate email --- */
@@ -48,6 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (mb_strlen($email) > 100) {
         $errors['email'] = 'Email must not exceed 100 characters.';
     } else {
+        // Ensure the new email is not used by a different account.
         $dup = $pdo->prepare('SELECT user_id FROM users WHERE email = ? AND user_id != ?');
         $dup->execute([$email, $userId]);
         if ($dup->fetch()) {
@@ -68,6 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $changePassword    = ($new_password !== '');
 
     if ($changePassword) {
+        // Only validate the password fields when the admin entered a new password.
         if (strlen($new_password) < 8) {
             $errors['new_password'] = 'Password must be at least 8 characters.';
         } elseif (!preg_match('/[A-Z]/', $new_password)) {
@@ -83,6 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     /* --- Merge back for re-display if errors --- */
     if ($errors) {
+        // Replace database values with submitted values so the form keeps user input.
         $user = array_merge($user, [
             'full_name' => $full_name,
             'email'     => $email,
@@ -91,35 +105,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
     } else {
         if ($changePassword) {
+            // Update profile fields and replace password with a new bcrypt hash.
             $upd = $pdo->prepare(
                 'UPDATE users SET full_name = ?, email = ?, role = ?, is_active = ?, password = ? WHERE user_id = ?'
             );
             $upd->execute([$full_name, $email, $role, $is_active, password_hash($new_password, PASSWORD_BCRYPT), $userId]);
         } else {
+            // Update profile fields while keeping the existing password unchanged.
             $upd = $pdo->prepare(
                 'UPDATE users SET full_name = ?, email = ?, role = ?, is_active = ? WHERE user_id = ?'
             );
             $upd->execute([$full_name, $email, $role, $is_active, $userId]);
         }
 
+        // Save a success message for the list page after redirect.
         $_SESSION['flash'] = [
             'type'    => 'success',
             'message' => 'User "' . $full_name . '" was updated successfully.',
         ];
+
+        // Redirect after POST to avoid duplicate updates on refresh.
         header('Location: list_users.php');
         exit;
     }
 }
 
+// Render the shared authenticated page header.
 require_once '../includes/header.php';
 ?>
 
+<!-- Breadcrumb navigation back to the user list -->
 <nav class="breadcrumb">
     <a href="list_users.php">All Users</a>
     <span class="breadcrumb-sep">/</span>
     <span>Edit User</span>
 </nav>
 
+<!-- Page heading and back action -->
 <div class="page-header">
     <div>
         <h1 class="page-title">Edit User</h1>
@@ -131,6 +153,7 @@ require_once '../includes/header.php';
     </a>
 </div>
 
+<!-- User edit form -->
 <div class="card form-card">
     <div class="card-header">
         <h2 class="card-title">User Details</h2>
@@ -138,13 +161,16 @@ require_once '../includes/header.php';
     </div>
     <div class="card-body">
 
+        <!-- General validation summary -->
         <?php if ($errors): ?>
             <div class="alert alert-error">Please fix the errors below before submitting.</div>
         <?php endif; ?>
 
         <form method="POST" action="edit_user.php" novalidate>
+            <!-- Hidden ID keeps the selected user attached to POST submissions -->
             <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
 
+            <!-- Full name input -->
             <div class="form-group">
                 <label for="full_name" class="form-label">Full Name <span style="color:var(--color-danger)">*</span></label>
                 <input
@@ -161,6 +187,7 @@ require_once '../includes/header.php';
                 <?php endif; ?>
             </div>
 
+            <!-- Email input -->
             <div class="form-group">
                 <label for="email" class="form-label">Email Address <span style="color:var(--color-danger)">*</span></label>
                 <input
@@ -176,6 +203,7 @@ require_once '../includes/header.php';
                 <?php endif; ?>
             </div>
 
+            <!-- Role and active status controls -->
             <div class="form-row">
                 <div class="form-group">
                     <label for="role" class="form-label">Role <span style="color:var(--color-danger)">*</span></label>
@@ -257,6 +285,7 @@ require_once '../includes/header.php';
                 </div>
             </details>
 
+            <!-- Submit and cancel actions -->
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
