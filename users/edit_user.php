@@ -1,4 +1,9 @@
 <?php
+/**
+ * Edit User - users/edit_user.php
+ *
+ * Admin form to update profile, role, active flag, and optional password reset.
+ */
 // Require a logged-in administrator before allowing user updates.
 require_once '../includes/auth_check.php';
 requireAdmin();

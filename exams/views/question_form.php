@@ -1,4 +1,4 @@
-<?php require __DIR__ . '/../../includes/header.php'; ?>
+<?php /** Add MCQ — four options and correct letter A–D. */ require __DIR__ . '/../../includes/header.php'; ?>
 <div class="card form-card"><div class="card-body"><form method="POST">
 <div class="form-group"><label>Question</label><textarea name="question_text" class="form-control" rows="3" required></textarea></div>
 <div class="form-row">

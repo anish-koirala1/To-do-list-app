@@ -1,13 +1,16 @@
 <?php
 /**
- * Exam module — Puskar Bastola
- * Exam, ExamQuestion, ExamAttempt, ExamAttemptAnswer
+ * Exam Model - exams/model/Exam.php
+ *
+ * Exams, MCQ questions, student attempts, and scored answers (Puskar Bastola module).
+ * Tables: exams, exam_questions, exam_attempts, exam_attempt_answers.
  */
 
 class Exam
 {
     public function __construct(private PDO $pdo) {}
 
+    /** List exams; optional filter by scheduled class or creator user. */
     public function getAll(?int $classId = null, ?int $userId = null): array
     {
         $sql = 'SELECT e.*, sc.title AS class_title FROM exams e
@@ -28,6 +31,7 @@ class Exam
         return $st->fetch() ?: null;
     }
 
+    /** Create exam; returns new id. */
     public function create(array $d): int
     {
         $st = $this->pdo->prepare(
@@ -49,6 +53,7 @@ class Exam
         return $this->pdo->prepare('DELETE FROM exams WHERE id = ?')->execute([$id]);
     }
 
+    /** MCQ questions for an exam, ordered by id. */
     public function getQuestions(int $examId): array
     {
         $st = $this->pdo->prepare('SELECT * FROM exam_questions WHERE exam_id = ? ORDER BY id');
@@ -67,6 +72,10 @@ class Exam
         ]);
     }
 
+    /**
+     * Begin an attempt: records start time and question count.
+     * @return int New attempt id for the take-exam form.
+     */
     public function startAttempt(int $examId, int $userId): int
     {
         $cnt = $this->pdo->prepare('SELECT COUNT(*) FROM exam_questions WHERE exam_id = ?');
@@ -78,6 +87,10 @@ class Exam
         return (int)$this->pdo->lastInsertId();
     }
 
+    /**
+     * Grade each answer, store selected_option rows, update attempt score and completed_at.
+     * @param array $answers Map of question_id => selected letter (A–D)
+     */
     public function submitAttempt(int $attemptId, array $answers): void
     {
         $attempt = $this->pdo->prepare('SELECT * FROM exam_attempts WHERE id = ?');
@@ -101,6 +114,7 @@ class Exam
         )->execute([$score, $attemptId]);
     }
 
+    /** Attempt history; filter by exam and/or student. */
     public function getAttempts(?int $examId = null, ?int $userId = null): array
     {
         $sql = 'SELECT a.*, e.title AS exam_title, u.full_name FROM exam_attempts a

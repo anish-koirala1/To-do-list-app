@@ -1,4 +1,4 @@
-<?php require __DIR__ . '/../../includes/header.php'; ?>
+<?php /** Staff search assignments by title/subject (?q=). */ require __DIR__ . '/../../includes/header.php'; ?>
 <div class="page-header"><h1 class="page-title">Search Assignments</h1></div>
 <form method="GET" class="filter-bar card" style="margin-bottom:20px;"><input type="hidden" name="action" value="search">
 <input name="q" class="form-control" placeholder="Title or subject" value="<?= htmlspecialchars($_GET['q'] ?? '') ?>">

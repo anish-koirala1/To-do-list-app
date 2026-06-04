@@ -1,4 +1,6 @@
-<?php require __DIR__ . '/../../includes/header.php'; ?>
+<?php
+/** Exams list — staff manage questions; students see Take exam. */
+require __DIR__ . '/../../includes/header.php'; ?>
 <div class="page-header">
 <div>
     <h1 class="page-title">Exams</h1>

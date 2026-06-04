@@ -1,8 +1,14 @@
 <?php
+/**
+ * Delete User - users/delete_user.php
+ *
+ * POST handler: permanently removes a user. Blocks self-delete and invalid redirects.
+ */
 require_once '../includes/auth_check.php';
 requireAdmin();
 require_once '../config/database.php';
 
+// Only accept POST from list_users action forms
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: list_users.php');
     exit;

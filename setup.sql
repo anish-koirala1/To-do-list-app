@@ -1,9 +1,13 @@
--- TO-DO LIST MANAGEMENT SYSTEM / Integrated Academic Management System
--- Team class diagram schema
+-- =============================================================================
+-- Database bootstrap - setup.sql
+-- Academic Management System (APSU): drops and recreates all tables + seed data.
+-- Run once in MySQL/phpMyAdmin. Demo passwords: admin / teacher / student (bcrypt).
+-- =============================================================================
 
 CREATE DATABASE IF NOT EXISTS academic_management_system CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE academic_management_system;
 
+-- Drop child tables first (FK order), then recreate
 SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS exam_attempt_answers;
 DROP TABLE IF EXISTS exam_attempts;
@@ -75,6 +79,7 @@ CREATE TABLE exams (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
+-- MCQ bank per exam (options A–D, one correct letter)
 CREATE TABLE exam_questions (
     id              INT AUTO_INCREMENT PRIMARY KEY,
     exam_id         INT NOT NULL,
@@ -89,6 +94,7 @@ CREATE TABLE exam_questions (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
+-- One row per student sitting an exam (score filled on submit)
 CREATE TABLE exam_attempts (
     id               INT AUTO_INCREMENT PRIMARY KEY,
     user_id          INT NOT NULL,
@@ -101,6 +107,7 @@ CREATE TABLE exam_attempts (
     FOREIGN KEY (exam_id) REFERENCES exams(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
+-- Selected option per question within an attempt
 CREATE TABLE exam_attempt_answers (
     id               INT AUTO_INCREMENT PRIMARY KEY,
     attempt_id       INT NOT NULL,
@@ -123,6 +130,7 @@ CREATE TABLE assignments (
     FOREIGN KEY (teacher_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
+-- Student work per assignment (unique one submission per student per assignment)
 CREATE TABLE assignment_submissions (
     id              INT AUTO_INCREMENT PRIMARY KEY,
     assignment_id   INT NOT NULL,
@@ -137,7 +145,9 @@ CREATE TABLE assignment_submissions (
     UNIQUE KEY uq_assignment_student (assignment_id, student_id)
 ) ENGINE=InnoDB;
 
--- Sample data
+-- -----------------------------------------------------------------------------
+-- Sample data for demos and testing
+-- -----------------------------------------------------------------------------
 INSERT INTO reports (user_id, title, subject, priority, assign_date, due_date, status) VALUES
 (2, 'Semester Progress Report', 'Computer Science', 'High', '2026-05-01', '2026-06-30', 'In Progress'),
 (3, 'Weekly Study Log', 'Mathematics', 'Medium', '2026-06-01', '2026-06-15', 'Pending');

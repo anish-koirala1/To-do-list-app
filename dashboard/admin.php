@@ -1,5 +1,12 @@
-<?php require __DIR__ . '/../includes/header.php'; ?>
+<?php
+/**
+ * Admin Dashboard - dashboard/admin.php
+ *
+ * Shown to users with role Admin. Quick links to user management and all modules.
+ */
+require __DIR__ . '/../includes/header.php'; ?>
 
+<!-- Administrator dashboard: user management and module overview -->
 <div class="role-dashboard role-dashboard-admin">
     <div class="dash-welcome">
         <span class="eyebrow">Administrator</span>

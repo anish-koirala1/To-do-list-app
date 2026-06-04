@@ -1,4 +1,9 @@
 <?php
+/**
+ * Enable/Disable User - users/disable_user.php
+ *
+ * POST handler: toggles is_active. Blocks disabling your own admin account.
+ */
 require_once '../includes/auth_check.php';
 requireAdmin();
 require_once '../config/database.php';

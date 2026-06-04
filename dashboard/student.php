@@ -1,5 +1,12 @@
-<?php require __DIR__ . '/../includes/header.php'; ?>
+<?php
+/**
+ * Student Dashboard - dashboard/student.php
+ *
+ * Read-only schedule/reports plus actions to take exams and submit assignments.
+ */
+require __DIR__ . '/../includes/header.php'; ?>
 
+<!-- Student dashboard: view schedule and complete tasks -->
 <div class="role-dashboard role-dashboard-student">
     <div class="dash-welcome">
         <span class="eyebrow">Student portal</span>

@@ -1,4 +1,8 @@
 <?php
+/**
+ * Progress tracking view — summary stats, completion bar, report table.
+ * Variables: $stats, $reports (from reports/index.php?action=track).
+ */
 $total = (int)($stats['total'] ?? 0);
 $done = (int)($stats['completed'] ?? 0);
 $pct = $total > 0 ? (int)round(($done / $total) * 100) : 0;

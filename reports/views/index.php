@@ -1,4 +1,6 @@
-<?php require __DIR__ . '/../../includes/header.php'; ?>
+<?php
+/** Reports list view — search/filter form and data table (staff can edit/delete). */
+require __DIR__ . '/../../includes/header.php'; ?>
 
 <div class="page-header">
     <div>

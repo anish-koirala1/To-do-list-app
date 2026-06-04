@@ -1,6 +1,9 @@
-<?php require __DIR__ . '/../../includes/header.php'; ?>
+<?php
+/** Report create/edit form — title, subject, priority, dates, status. */
+require __DIR__ . '/../../includes/header.php'; ?>
 <div class="page-header"><h1 class="page-title"><?= htmlspecialchars($pageTitle) ?></h1></div>
 <div class="card form-card"><div class="card-body">
+<!-- POST handled by reports/index.php (create or edit action) -->
 <form method="POST">
     <div class="form-group"><label>Title</label><input name="title" class="form-control" required value="<?= htmlspecialchars($report['title']) ?>"></div>
     <div class="form-group"><label>Subject</label><input name="subject" class="form-control" required value="<?= htmlspecialchars($report['subject']) ?>"></div>

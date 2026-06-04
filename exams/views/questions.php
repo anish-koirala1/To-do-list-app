@@ -1,4 +1,4 @@
-<?php require __DIR__ . '/../../includes/header.php'; ?>
+<?php /** Staff: list MCQ questions for one exam. */ require __DIR__ . '/../../includes/header.php'; ?>
 <div class="page-header">
 <div><h1 class="page-title">Questions: <?= htmlspecialchars($ex['title'] ?? '') ?></h1></div>
 <?php if (canManageAcademics()): ?><a href="index.php?action=add_question&exam_id=<?= (int)$_GET['exam_id'] ?>" class="btn btn-primary">+ Add Question</a><?php endif; ?>

@@ -1,4 +1,4 @@
-<?php require __DIR__ . '/../../includes/header.php'; ?>
+<?php /** Staff filter by subject and Open/Closed status. */ require __DIR__ . '/../../includes/header.php'; ?>
 <div class="page-header"><h1 class="page-title">Filter Assignments</h1></div>
 <form method="GET" class="filter-bar card" style="margin-bottom:20px;"><input type="hidden" name="action" value="filter">
 <input name="subject" class="form-control" placeholder="Subject" value="<?= htmlspecialchars($_GET['subject'] ?? '') ?>">

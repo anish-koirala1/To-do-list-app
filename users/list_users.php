@@ -1,4 +1,9 @@
 <?php
+/**
+ * User List - users/list_users.php
+ *
+ * Admin-only paginated table with search, role/status filters, and row actions.
+ */
 require_once '../includes/auth_check.php';
 require_once '../includes/helpers.php';
 requireAdmin();
@@ -109,7 +114,7 @@ require_once '../includes/header.php';
     <?php endif; ?>
 </div>
 
-<!-- Stats -->
+<!-- Summary counts: total, active, disabled, teachers, students -->
 <div class="stats-row">
     <div class="stat-card accent-primary">
         <span class="stat-label">Total Users</span>
@@ -133,7 +138,7 @@ require_once '../includes/header.php';
     </div>
 </div>
 
-<!-- User Table -->
+<!-- Filter form + paginated user table -->
 <div class="card">
     <!-- Search / Filter Bar -->
     <form method="GET" action="list_users.php" id="filter-form">

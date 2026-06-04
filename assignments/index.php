@@ -1,4 +1,9 @@
 <?php
+/**
+ * Assignments Controller - assignments/index.php
+ *
+ * Routes: index, create, edit, delete, submit (student), submissions, mark, search, filter.
+ */
 require_once __DIR__ . '/../includes/auth_check.php';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/helpers.php';
@@ -47,6 +52,7 @@ if ($action === 'edit' && isset($_GET['id'])) {
     exit;
 }
 
+// Student submission flow
 if ($action === 'submit' && isset($_GET['id']) && isStudent()) {
     $id = (int)$_GET['id'];
     $a = $model->getById($id);

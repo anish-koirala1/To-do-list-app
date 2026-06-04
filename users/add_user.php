@@ -1,4 +1,9 @@
 <?php
+/**
+ * Add User - users/add_user.php
+ *
+ * Admin form to create accounts with validation, bcrypt password, and duplicate checks.
+ */
 // Require a logged-in user and limit this page to administrators only.
 require_once '../includes/auth_check.php';
 requireAdmin();

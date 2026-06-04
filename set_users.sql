@@ -1,6 +1,11 @@
--- Admin, Teacher, Student — matches class diagram (column: id, not user_id)
+-- =============================================================================
+-- Seed / refresh demo users (set_users.sql)
+-- Run after setup.sql. Passwords are bcrypt hashes (plain: admin / teacher / student).
+-- ON DUPLICATE KEY UPDATE refreshes existing rows by username/email unique keys.
+-- =============================================================================
 USE academic_management_system;
 
+-- Demo accounts for each role (Anish Koirala — User module)
 INSERT INTO users (full_name, username, email, password, role, is_active) VALUES
 (
     'System Admin',
@@ -26,6 +31,7 @@ INSERT INTO users (full_name, username, email, password, role, is_active) VALUES
     'Student',
     TRUE
 )
+-- If username or email already exists, update profile fields and re-enable account
 ON DUPLICATE KEY UPDATE
     full_name = VALUES(full_name),
     username  = VALUES(username),

@@ -1,7 +1,12 @@
-/* APSU — Premium university portal theme */
+/**
+ * APSU Global Stylesheet - assets/css/style.css
+ *
+ * University portal theme: CSS variables, layout, landing, auth, forms,
+ * tables, dashboards, and responsive breakpoints. Loaded by header.php.
+ */
 @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600;700&display=swap');
 
-/* Base */
+/* Base — reset, typography, links */
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;

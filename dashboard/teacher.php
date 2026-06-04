@@ -1,5 +1,12 @@
-<?php require __DIR__ . '/../includes/header.php'; ?>
+<?php
+/**
+ * Teacher Dashboard - dashboard/teacher.php
+ *
+ * Faculty workspace: reports, classes, exams, assignments. No user CRUD.
+ */
+require __DIR__ . '/../includes/header.php'; ?>
 
+<!-- Teacher dashboard: academic content management shortcuts -->
 <div class="role-dashboard role-dashboard-teacher">
     <div class="dash-welcome">
         <span class="eyebrow">Faculty portal</span>

@@ -1,4 +1,4 @@
-<?php require __DIR__ . '/../../includes/header.php'; ?>
+<?php /** Teacher view: all submissions for one assignment. */ require __DIR__ . '/../../includes/header.php'; ?>
 <div class="page-header"><h1 class="page-title">Submissions: <?= htmlspecialchars($assignment['title'] ?? '') ?></h1><a href="index.php" class="btn btn-outline">Back</a></div>
 <div class="table-card"><table class="data-table">
 <thead><tr><th>Student</th><th>Submitted</th><th>Status</th><th>Marks</th><th>Actions</th></tr></thead>

@@ -1,6 +1,19 @@
 <?php
+/**
+ * Landing Page - index.php
+ * 
+ * This is the main entry point for the Academic Portal System (APSU).
+ * It displays information about the three user roles and provides login access.
+ * 
+ * Behavior:
+ * - If a user is already logged in, they are redirected to their dashboard
+ * - Otherwise, the landing page with role descriptions is displayed
+ */
+
+// Initialize the session to track logged-in users
 session_start();
 
+// If user is already authenticated, skip the landing page
 if (isset($_SESSION['user_id'])) {
     header('Location: dashboard/index.php');
     exit;
@@ -16,6 +29,7 @@ if (isset($_SESSION['user_id'])) {
 </head>
 <body class="landing-page">
 
+<!-- Public landing: branding and sign-in -->
 <header class="landing-header">
     <a href="index.php" class="landing-brand">
         <span class="brand-mark">
@@ -87,6 +101,7 @@ if (isset($_SESSION['user_id'])) {
         </div>
     </section>
 
+    <!-- Team module credits -->
     <section class="landing-features" aria-label="Team modules">
         <article>
             <strong>User Management</strong>

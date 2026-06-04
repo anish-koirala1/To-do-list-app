@@ -1,9 +1,16 @@
 <?php
+/**
+ * Assignment Model - assignments/model/Assignment.php
+ *
+ * Teacher-published assignments and student submissions (Sunil Kumar BK module).
+ * Tables: assignments, assignment_submissions.
+ */
 
 class Assignment
 {
     public function __construct(private PDO $pdo) {}
 
+    /** List assignments with optional subject/status filters. */
     public function listAll(?string $subject = null, ?string $status = null): array
     {
         $sql = 'SELECT a.*, u.full_name AS teacher_name FROM assignments a
@@ -17,6 +24,7 @@ class Assignment
         return $st->fetchAll();
     }
 
+    /** Search by title or subject (LIKE). */
     public function search(string $q): array
     {
         $st = $this->pdo->prepare(
@@ -58,6 +66,7 @@ class Assignment
         return $this->pdo->prepare('DELETE FROM assignments WHERE id = ?')->execute([$id]);
     }
 
+    /** All student submissions for one assignment. */
     public function submissionsForAssignment(int $assignmentId): array
     {
         $st = $this->pdo->prepare(
@@ -68,6 +77,10 @@ class Assignment
         return $st->fetchAll();
     }
 
+    /**
+     * Student submits text; upserts one row per (assignment, student).
+     * Marks Late if submitted after due_date.
+     */
     public function submit(int $assignmentId, int $studentId, string $text): bool
     {
         $late = $this->pdo->prepare('SELECT due_date, status FROM assignments WHERE id = ?');
@@ -83,6 +96,7 @@ class Assignment
         )->execute([$assignmentId, $studentId, $text, $status]);
     }
 
+    /** Teacher enters marks and feedback. */
     public function markSubmission(int $id, int $marks, string $feedback, string $status): bool
     {
         return $this->pdo->prepare(

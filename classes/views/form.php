@@ -1,4 +1,6 @@
-<?php require __DIR__ . '/../../includes/header.php'; ?>
+<?php
+/** Schedule class form — optional report link, room, datetime range. */
+require __DIR__ . '/../../includes/header.php'; ?>
 <div class="page-header"><h1 class="page-title"><?= htmlspecialchars($pageTitle) ?></h1></div>
 <div class="card form-card"><div class="card-body">
 <form method="POST">

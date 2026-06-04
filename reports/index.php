@@ -1,4 +1,10 @@
 <?php
+/**
+ * Reports Controller - reports/index.php
+ *
+ * Routes: index (list), create, edit, delete, track (staff progress dashboard).
+ * Students see only their own reports (read-only).
+ */
 require_once __DIR__ . '/../includes/auth_check.php';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/helpers.php';
@@ -9,6 +15,7 @@ $model = new Report($pdo);
 $action = $_GET['action'] ?? 'index';
 $baseUrl = '../';
 
+// Staff-only: aggregate completion stats and report list
 if ($action === 'track') {
     if (isStudent()) {
         redirectWithFlash('index.php', 'error', 'Progress tracking is for teachers and administrators.');
@@ -20,12 +27,14 @@ if ($action === 'track') {
     exit;
 }
 
+// Staff-only: delete by query string id
 if ($action === 'delete' && isset($_GET['id'])) {
     requireStaff();
     $model->delete((int)$_GET['id']);
     redirectWithFlash('index.php', 'success', 'Report deleted.');
 }
 
+// Staff-only: create from POST
 if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     requireStaff();
     $model->create([
@@ -40,6 +49,7 @@ if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     redirectWithFlash('index.php', 'success', 'Report created.');
 }
 
+// Staff-only: edit form and POST update
 if ($action === 'edit' && isset($_GET['id'])) {
     requireStaff();
     $id = (int)$_GET['id'];
@@ -63,6 +73,7 @@ if ($action === 'edit' && isset($_GET['id'])) {
     exit;
 }
 
+// Staff-only: empty create form
 if ($action === 'create') {
     requireStaff();
     $pageTitle = 'Create Report';
@@ -71,6 +82,7 @@ if ($action === 'create') {
     exit;
 }
 
+// Default: list with optional search/filters; students scoped to own user_id
 $pageTitle = 'Reports';
 $search = trim($_GET['search'] ?? '');
 $status = $_GET['status'] ?? '';

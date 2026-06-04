@@ -1,4 +1,6 @@
-<?php require __DIR__ . '/../../includes/header.php'; ?>
+<?php
+/** Student exam UI — one card per MCQ; hidden attempt_id ties answers to grading. */
+require __DIR__ . '/../../includes/header.php'; ?>
 <div class="page-header"><h1 class="page-title">Take: <?= htmlspecialchars($ex['title'] ?? '') ?></h1></div>
 <form method="POST">
 <input type="hidden" name="attempt_id" value="<?= (int)$attemptId ?>">

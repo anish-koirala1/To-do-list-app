@@ -1,4 +1,6 @@
-<?php require __DIR__ . '/../../includes/header.php'; ?>
+<?php
+/** Scheduled classes list — timetable table with links to exams. */
+require __DIR__ . '/../../includes/header.php'; ?>
 <div class="page-header">
     <div>
         <h1 class="page-title"><?= isStudent() ? 'My Schedule' : 'Scheduled Classes' ?></h1>

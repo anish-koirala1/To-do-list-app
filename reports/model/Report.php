@@ -1,7 +1,14 @@
 <?php
+/**
+ * Report Model - reports/model/Report.php
+ *
+ * Data access for progress reports (Utsav Luitel module).
+ * Table: reports — linked to users via user_id.
+ */
 
 class Report
 {
+    /** @var PDO Shared database connection */
     private PDO $pdo;
 
     public function __construct(PDO $pdo)
@@ -9,6 +16,9 @@ class Report
         $this->pdo = $pdo;
     }
 
+    /**
+     * List reports with optional filters. Students pass $userId to see only their rows.
+     */
     public function getAll(?string $search = null, ?string $status = null, ?string $priority = null, ?int $userId = null): array
     {
         $sql = 'SELECT r.*, u.full_name AS owner_name FROM reports r JOIN users u ON r.user_id = u.id WHERE 1=1';
@@ -36,6 +46,7 @@ class Report
         return $stmt->fetchAll();
     }
 
+    /** Fetch one report by primary key, including owner name. */
     public function getById(int $id): ?array
     {
         $stmt = $this->pdo->prepare('SELECT r.*, u.full_name AS owner_name FROM reports r JOIN users u ON r.user_id = u.id WHERE r.id = ?');
@@ -44,6 +55,7 @@ class Report
         return $row ?: null;
     }
 
+    /** Insert a new report row. */
     public function create(array $data): bool
     {
         $stmt = $this->pdo->prepare(
@@ -56,6 +68,7 @@ class Report
         ]);
     }
 
+    /** Update report fields by id. */
     public function update(int $id, array $data): bool
     {
         $stmt = $this->pdo->prepare(
@@ -67,11 +80,13 @@ class Report
         ]);
     }
 
+    /** Permanently remove a report (cascades to linked scheduled_classes.report_id SET NULL). */
     public function delete(int $id): bool
     {
         return $this->pdo->prepare('DELETE FROM reports WHERE id = ?')->execute([$id]);
     }
 
+    /** Aggregate counts for the progress tracking dashboard. */
     public function progressStats(): array
     {
         return $this->pdo->query("SELECT

@@ -1,4 +1,10 @@
 <?php
+/**
+ * ScheduledClass Model - classes/model/ScheduledClass.php
+ *
+ * Timetable / class sessions (Puskar Bastola module).
+ * Optional link to reports; required link to users (student owner).
+ */
 
 class ScheduledClass
 {
@@ -9,6 +15,7 @@ class ScheduledClass
         $this->pdo = $pdo;
     }
 
+    /** List classes; pass $userId to restrict to one student's schedule. */
     public function getAll(?int $userId = null): array
     {
         $sql = 'SELECT sc.*, r.title AS report_title, u.full_name AS user_name
@@ -33,6 +40,7 @@ class ScheduledClass
         return $stmt->fetch() ?: null;
     }
 
+    /** Create a scheduled class session. */
     public function create(array $d): bool
     {
         $stmt = $this->pdo->prepare(
@@ -61,6 +69,7 @@ class ScheduledClass
         return $this->pdo->prepare('DELETE FROM scheduled_classes WHERE id = ?')->execute([$id]);
     }
 
+    /** Dropdown options when linking a class to a report. */
     public function reportOptions(): array
     {
         return $this->pdo->query('SELECT id, title FROM reports ORDER BY title')->fetchAll();

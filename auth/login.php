@@ -1,4 +1,9 @@
 <?php
+/**
+ * Login Page - auth/login.php
+ *
+ * Public sign-in form; posts to authenticate.php. Redirects if already logged in.
+ */
 // Start the session so we can read login state and one-time error messages.
 session_start();
 

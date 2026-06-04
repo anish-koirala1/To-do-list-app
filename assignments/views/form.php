@@ -1,4 +1,4 @@
-<?php require __DIR__ . '/../../includes/header.php'; ?>
+<?php /** Assignment create/edit form. */ require __DIR__ . '/../../includes/header.php'; ?>
 <div class="page-header"><h1 class="page-title"><?= htmlspecialchars($pageTitle) ?></h1></div>
 <div class="card form-card"><div class="card-body"><form method="POST">
 <div class="form-group"><label>Title</label><input name="title" class="form-control" required value="<?= htmlspecialchars($row['title'] ?? '') ?>"></div>

@@ -1,4 +1,10 @@
 <?php
+/**
+ * Exams Controller - exams/index.php
+ *
+ * Routes: index, create, delete, questions, add_question, take (student), attempts.
+ * Optional ?class_id= filters exams for one scheduled class.
+ */
 require_once __DIR__ . '/../includes/auth_check.php';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/helpers.php';
@@ -55,6 +61,7 @@ if ($action === 'questions' && isset($_GET['exam_id'])) {
     exit;
 }
 
+// Student takes exam: start attempt on GET, grade on POST
 if ($action === 'take' && isset($_GET['exam_id'])) {
     if (!isStudent()) {
         redirectWithFlash('index.php', 'error', 'Only students can take exams.');

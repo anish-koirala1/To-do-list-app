@@ -1,7 +1,13 @@
+/**
+ * APSU Client Scripts - assets/js/main.js
+ *
+ * Loaded on login and all authenticated pages (footer.php).
+ * Handles password toggle, confirm dialogs, strength meter, search debounce, flash autohide.
+ */
 'use strict';
 
 /* ============================================================
-   Password visibility toggle
+   Password visibility toggle (login and add/edit user forms)
    ============================================================ */
 function togglePassword(fieldId) {
     // Find the password input and its matching eye icon by ID.

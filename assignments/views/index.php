@@ -1,4 +1,6 @@
-<?php require __DIR__ . '/../../includes/header.php'; ?>
+<?php
+/** Assignments list — students submit; staff manage submissions and marks. */
+require __DIR__ . '/../../includes/header.php'; ?>
 <div class="page-header">
 <div>
     <h1 class="page-title"><?= isStudent() ? 'My Assignments' : 'Assignments' ?></h1>

@@ -1,4 +1,10 @@
 <?php
+/**
+ * Scheduled Classes Controller - classes/index.php
+ *
+ * Routes: index (list), create, edit, delete.
+ * Students see only classes where user_id matches their account.
+ */
 require_once __DIR__ . '/../includes/auth_check.php';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/helpers.php';
