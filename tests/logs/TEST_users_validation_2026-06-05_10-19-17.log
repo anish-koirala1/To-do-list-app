@@ -1,0 +1,30 @@
+APSU Test Log
+Suite  : users_validation
+Class  : validateUserCreateData()
+Owner  : Anish Koirala
+Run at : 2026-06-05T10:19:21+02:00
+PASS   : 12
+FAIL   : 0
+======================================================================
+[10:19:21] DATA valid_fixture => {"full_name":"Łukasz O'Brien","username":"lukasz.obrien-staff","email":"lukasz.obrien@uni.edu.dk","password":"SecurePass9","role":"Teacher","is_active":1}
+[10:19:21] PASS [V1] Valid unicode name + email accepted
+[10:19:21] PASS [V2] Boundary 100-char name accepted
+[10:19:21] DATA invalid[0] => {"field":"full_name","value":"","expect":"required"}
+[10:19:21] PASS [VI1] Reject full_name: required
+[10:19:21] DATA invalid[1] => {"field":"full_name","value":"John Smith 2","expect":"no digits"}
+[10:19:21] PASS [VI2] Reject full_name: no digits
+[10:19:21] DATA invalid[2] => {"field":"full_name","value":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX","expect":"max 100"}
+[10:19:21] PASS [VI3] Reject full_name: max 100
+[10:19:21] DATA invalid[3] => {"field":"username","value":"ab","expect":"min 3 chars"}
+[10:19:21] PASS [VI4] Reject username: min 3 chars
+[10:19:21] DATA invalid[4] => {"field":"username","value":"bad user!","expect":"pattern"}
+[10:19:21] PASS [VI5] Reject username: pattern
+[10:19:21] DATA invalid[5] => {"field":"email","value":"not-an-email","expect":"format"}
+[10:19:21] PASS [VI6] Reject email: format
+[10:19:21] DATA invalid[6] => {"field":"password","value":"short","expect":"min 8"}
+[10:19:21] PASS [VI7] Reject password: min 8
+[10:19:21] DATA invalid[7] => {"field":"password","value":"alllowercase1","expect":"uppercase"}
+[10:19:21] PASS [VI8] Reject password: uppercase
+[10:19:21] DATA invalid[8] => {"field":"role","value":"SuperUser","expect":"invalid enum"}
+[10:19:21] PASS [VI9] Reject role: invalid enum
+[10:19:21] PASS [V10] Duplicate username rejected

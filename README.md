@@ -188,6 +188,24 @@ Remote: `https://github.com/anish-koirala1/To-do-list-app.git`
 
 ---
 
+## Testing (10% criterion)
+
+Run **one command** — clears old logs, runs all tests, writes fresh report:
+
+```powershell
+cd app
+C:\xampp\php\php.exe tests\run_all_tests.php
+```
+
+| File | Purpose |
+|------|---------|
+| `tests/TEST_PLAN.md` | Test plan and rubric evidence |
+| `tests/test_data.php` | Typed test fixtures |
+| `tests/TESTING_REPORT.md` | Generated pass/fail summary |
+| `tests/logs/` | Latest run only (9 log files) |
+
+---
+
 ## Troubleshooting
 
 | Problem | What to do |

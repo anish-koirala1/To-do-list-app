@@ -1,0 +1,26 @@
+APSU Test Log
+Suite  : users_login
+Class  : findUserForLogin()
+Owner  : Anish Koirala
+Run at : 2026-06-05T10:19:20+02:00
+PASS   : 9
+FAIL   : 0
+======================================================================
+[10:19:17] INFO Data types: VARCHAR username/email, bcrypt password, ENUM role, BOOLEAN is_active
+[10:19:17] DATA fixture[0] => {"login":"admin","password":"Admin@1234","role":"Admin","type":"username"}
+[10:19:17] PASS [L1] Valid login via username: admin
+[10:19:17] DATA fixture[1] => {"login":"admin@example.com","password":"Admin@1234","role":"Admin","type":"email"}
+[10:19:18] PASS [L2] Valid login via email: admin@example.com
+[10:19:18] DATA fixture[2] => {"login":"teacher","password":"Teacher@1234","role":"Teacher","type":"username"}
+[10:19:18] PASS [L3] Valid login via username: teacher
+[10:19:18] DATA fixture[3] => {"login":"teacher@example.com","password":"Teacher@1234","role":"Teacher","type":"email"}
+[10:19:19] PASS [L4] Valid login via email: teacher@example.com
+[10:19:19] DATA fixture[4] => {"login":"student","password":"Student@1234","role":"Student","type":"username"}
+[10:19:20] PASS [L5] Valid login via username: student
+[10:19:20] DATA invalid[0] => {"login":"","password":"Admin@1234","reason":"empty identifier"}
+[10:19:20] PASS [LI1] Empty login returns null
+[10:19:20] DATA invalid[1] => {"login":"ghost@university.edu","password":"WrongPass1","reason":"unknown account"}
+[10:19:20] PASS [LI2] Rejected: unknown account
+[10:19:20] DATA invalid[2] => {"login":"admin","password":"wrong","reason":"bad password"}
+[10:19:20] PASS [LI3] Rejected: bad password
+[10:19:20] PASS [L10] Disabled account found but is_active=0

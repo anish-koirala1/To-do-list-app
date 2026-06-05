@@ -1,0 +1,203 @@
+APSU Test Run
+Started: 2026-06-05T10:19:17+02:00
+Run id : 2026-06-05_10-19-17
+======================================================================
+
+[PASS] Users & Auth (component) — exit 0
+[users_login] [10:19:17] INFO Data types: VARCHAR username/email, bcrypt password, ENUM role, BOOLEAN is_active
+[users_login] [10:19:17] DATA fixture[0] => {"login":"admin","password":"Admin@1234","role":"Admin","type":"username"}
+[users_login] [10:19:17] PASS [L1] Valid login via username: admin
+[users_login] [10:19:17] DATA fixture[1] => {"login":"admin@example.com","password":"Admin@1234","role":"Admin","type":"email"}
+[users_login] [10:19:18] PASS [L2] Valid login via email: admin@example.com
+[users_login] [10:19:18] DATA fixture[2] => {"login":"teacher","password":"Teacher@1234","role":"Teacher","type":"username"}
+[users_login] [10:19:18] PASS [L3] Valid login via username: teacher
+[users_login] [10:19:18] DATA fixture[3] => {"login":"teacher@example.com","password":"Teacher@1234","role":"Teacher","type":"email"}
+[users_login] [10:19:19] PASS [L4] Valid login via email: teacher@example.com
+[users_login] [10:19:19] DATA fixture[4] => {"login":"student","password":"Student@1234","role":"Student","type":"username"}
+[users_login] [10:19:20] PASS [L5] Valid login via username: student
+[users_login] [10:19:20] DATA invalid[0] => {"login":"","password":"Admin@1234","reason":"empty identifier"}
+[users_login] [10:19:20] PASS [LI1] Empty login returns null
+[users_login] [10:19:20] DATA invalid[1] => {"login":"ghost@university.edu","password":"WrongPass1","reason":"unknown account"}
+[users_login] [10:19:20] PASS [LI2] Rejected: unknown account
+[users_login] [10:19:20] DATA invalid[2] => {"login":"admin","password":"wrong","reason":"bad password"}
+[users_login] [10:19:20] PASS [LI3] Rejected: bad password
+[users_login] [10:19:20] PASS [L10] Disabled account found but is_active=0
+[users_crud] [10:19:20] DATA insert_payload => {"full_name":"Łukasz O'Brien","username":"crud.1780647560","email":"crud.1780647560@uni.edu.dk","password":"SecurePass9","role":"Teacher","is_active":1}
+[users_crud] [10:19:20] PASS [C1] ADD — INSERT user
+[users_crud] [10:19:20] INFO Inserted user id=16 (INT PK)
+[users_crud] [10:19:20] PASS [C2] EDIT — UPDATE full_name and ENUM role
+[users_crud] [10:19:20] PASS [C3] LIST/READ — SELECT returns updated row
+[users_crud] [10:19:20] PASS [C4] EDIT — toggle is_active BOOLEAN
+[users_crud] [10:19:20] PASS [C5] DELETE — remove user
+[users_crud] [10:19:20] PASS [C6] DELETE — row no longer exists
+[users_find_filter] [10:19:20] DATA search[0] => {"q":"admin","expect_min":1,"type":"partial name"}
+[users_find_filter] [10:19:20] PASS [F1] FIND — 'admin' (partial name) count>=1
+[users_find_filter] [10:19:20] DATA search[1] => {"q":"example.com","expect_min":1,"type":"email domain"}
+[users_find_filter] [10:19:20] PASS [F2] FIND — 'example.com' (email domain) count>=1
+[users_find_filter] [10:19:20] DATA search[2] => {"q":"teacher","expect_min":1,"type":"role keyword in data"}
+[users_find_filter] [10:19:20] PASS [F3] FIND — 'teacher' (role keyword in data) count>=1
+[users_find_filter] [10:19:20] DATA search[3] => {"q":"ZZZNOMATCH999","expect_min":0,"type":"no results"}
+[users_find_filter] [10:19:20] PASS [F4] FIND — 'ZZZNOMATCH999' (no results) count>=0
+[users_find_filter] [10:19:20] DATA filter[0] => {"role":"Admin","status":"1","label":"active admins"}
+[users_find_filter] [10:19:21] PASS [FL1] FILTER — active admins
+[users_find_filter] [10:19:21] PASS [FL1b] FILTER — all rows match role Admin
+[users_find_filter] [10:19:21] DATA filter[1] => {"role":"Teacher","status":"1","label":"active teachers"}
+[users_find_filter] [10:19:21] PASS [FL2] FILTER — active teachers
+[users_find_filter] [10:19:21] PASS [FL2b] FILTER — all rows match role Teacher
+[users_find_filter] [10:19:21] DATA filter[2] => {"role":"Student","status":"1","label":"active students"}
+[users_find_filter] [10:19:21] PASS [FL3] FILTER — active students
+[users_find_filter] [10:19:21] PASS [FL3b] FILTER — all rows match role Student
+[users_find_filter] [10:19:21] DATA filter[3] => {"role":"","status":"0","label":"disabled any role"}
+[users_find_filter] [10:19:21] PASS [FL4] FILTER — disabled any role
+[users_validation] [10:19:21] DATA valid_fixture => {"full_name":"Łukasz O'Brien","username":"lukasz.obrien-staff","email":"lukasz.obrien@uni.edu.dk","password":"SecurePass9","role":"Teacher","is_active":1}
+[users_validation] [10:19:21] PASS [V1] Valid unicode name + email accepted
+[users_validation] [10:19:21] PASS [V2] Boundary 100-char name accepted
+[users_validation] [10:19:21] DATA invalid[0] => {"field":"full_name","value":"","expect":"required"}
+[users_validation] [10:19:21] PASS [VI1] Reject full_name: required
+[users_validation] [10:19:21] DATA invalid[1] => {"field":"full_name","value":"John Smith 2","expect":"no digits"}
+[users_validation] [10:19:21] PASS [VI2] Reject full_name: no digits
+[users_validation] [10:19:21] DATA invalid[2] => {"field":"full_name","value":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX","expect":"max 100"}
+[users_validation] [10:19:21] PASS [VI3] Reject full_name: max 100
+[users_validation] [10:19:21] DATA invalid[3] => {"field":"username","value":"ab","expect":"min 3 chars"}
+[users_validation] [10:19:21] PASS [VI4] Reject username: min 3 chars
+[users_validation] [10:19:21] DATA invalid[4] => {"field":"username","value":"bad user!","expect":"pattern"}
+[users_validation] [10:19:21] PASS [VI5] Reject username: pattern
+[users_validation] [10:19:21] DATA invalid[5] => {"field":"email","value":"not-an-email","expect":"format"}
+[users_validation] [10:19:21] PASS [VI6] Reject email: format
+[users_validation] [10:19:21] DATA invalid[6] => {"field":"password","value":"short","expect":"min 8"}
+[users_validation] [10:19:21] PASS [VI7] Reject password: min 8
+[users_validation] [10:19:21] DATA invalid[7] => {"field":"password","value":"alllowercase1","expect":"uppercase"}
+[users_validation] [10:19:21] PASS [VI8] Reject password: uppercase
+[users_validation] [10:19:21] DATA invalid[8] => {"field":"role","value":"SuperUser","expect":"invalid enum"}
+[users_validation] [10:19:21] PASS [VI9] Reject role: invalid enum
+[users_validation] [10:19:21] PASS [V10] Duplicate username rejected
+
+Users tests complete. Logs:
+C:\Users\59094\Downloads\TO_DO_APP(ANISH)\app\tests/logs/TEST_users_login_2026-06-05_10-19-17.log
+C:\Users\59094\Downloads\TO_DO_APP(ANISH)\app\tests/logs/TEST_users_crud_2026-06-05_10-19-17.log
+C:\Users\59094\Downloads\TO_DO_APP(ANISH)\app\tests/logs/TEST_users_find_filter_2026-06-05_10-19-17.log
+C:\Users\59094\Downloads\TO_DO_APP(ANISH)\app\tests/logs/TEST_users_validation_2026-06-05_10-19-17.log
+----------------------------------------------------------------------
+[PASS] Model classes (per-class) — exit 0
+[users_login] [10:19:17] INFO Data types: VARCHAR username/email, bcrypt password, ENUM role, BOOLEAN is_active
+[users_login] [10:19:17] DATA fixture[0] => {"login":"admin","password":"Admin@1234","role":"Admin","type":"username"}
+[users_login] [10:19:17] PASS [L1] Valid login via username: admin
+[users_login] [10:19:17] DATA fixture[1] => {"login":"admin@example.com","password":"Admin@1234","role":"Admin","type":"email"}
+[users_login] [10:19:18] PASS [L2] Valid login via email: admin@example.com
+[users_login] [10:19:18] DATA fixture[2] => {"login":"teacher","password":"Teacher@1234","role":"Teacher","type":"username"}
+[users_login] [10:19:18] PASS [L3] Valid login via username: teacher
+[users_login] [10:19:18] DATA fixture[3] => {"login":"teacher@example.com","password":"Teacher@1234","role":"Teacher","type":"email"}
+[users_login] [10:19:19] PASS [L4] Valid login via email: teacher@example.com
+[users_login] [10:19:19] DATA fixture[4] => {"login":"student","password":"Student@1234","role":"Student","type":"username"}
+[users_login] [10:19:20] PASS [L5] Valid login via username: student
+[users_login] [10:19:20] DATA invalid[0] => {"login":"","password":"Admin@1234","reason":"empty identifier"}
+[users_login] [10:19:20] PASS [LI1] Empty login returns null
+[users_login] [10:19:20] DATA invalid[1] => {"login":"ghost@university.edu","password":"WrongPass1","reason":"unknown account"}
+[users_login] [10:19:20] PASS [LI2] Rejected: unknown account
+[users_login] [10:19:20] DATA invalid[2] => {"login":"admin","password":"wrong","reason":"bad password"}
+[users_login] [10:19:20] PASS [LI3] Rejected: bad password
+[users_login] [10:19:20] PASS [L10] Disabled account found but is_active=0
+[users_crud] [10:19:20] DATA insert_payload => {"full_name":"Łukasz O'Brien","username":"crud.1780647560","email":"crud.1780647560@uni.edu.dk","password":"SecurePass9","role":"Teacher","is_active":1}
+[users_crud] [10:19:20] PASS [C1] ADD — INSERT user
+[users_crud] [10:19:20] INFO Inserted user id=16 (INT PK)
+[users_crud] [10:19:20] PASS [C2] EDIT — UPDATE full_name and ENUM role
+[users_crud] [10:19:20] PASS [C3] LIST/READ — SELECT returns updated row
+[users_crud] [10:19:20] PASS [C4] EDIT — toggle is_active BOOLEAN
+[users_crud] [10:19:20] PASS [C5] DELETE — remove user
+[users_crud] [10:19:20] PASS [C6] DELETE — row no longer exists
+[users_find_filter] [10:19:20] DATA search[0] => {"q":"admin","expect_min":1,"type":"partial name"}
+[users_find_filter] [10:19:20] PASS [F1] FIND — 'admin' (partial name) count>=1
+[users_find_filter] [10:19:20] DATA search[1] => {"q":"example.com","expect_min":1,"type":"email domain"}
+[users_find_filter] [10:19:20] PASS [F2] FIND — 'example.com' (email domain) count>=1
+[users_find_filter] [10:19:20] DATA search[2] => {"q":"teacher","expect_min":1,"type":"role keyword in data"}
+[users_find_filter] [10:19:20] PASS [F3] FIND — 'teacher' (role keyword in data) count>=1
+[users_find_filter] [10:19:20] DATA search[3] => {"q":"ZZZNOMATCH999","expect_min":0,"type":"no results"}
+[users_find_filter] [10:19:20] PASS [F4] FIND — 'ZZZNOMATCH999' (no results) count>=0
+[users_find_filter] [10:19:20] DATA filter[0] => {"role":"Admin","status":"1","label":"active admins"}
+[users_find_filter] [10:19:21] PASS [FL1] FILTER — active admins
+[users_find_filter] [10:19:21] PASS [FL1b] FILTER — all rows match role Admin
+[users_find_filter] [10:19:21] DATA filter[1] => {"role":"Teacher","status":"1","label":"active teachers"}
+[users_find_filter] [10:19:21] PASS [FL2] FILTER — active teachers
+[users_find_filter] [10:19:21] PASS [FL2b] FILTER — all rows match role Teacher
+[users_find_filter] [10:19:21] DATA filter[2] => {"role":"Student","status":"1","label":"active students"}
+[users_find_filter] [10:19:21] PASS [FL3] FILTER — active students
+[users_find_filter] [10:19:21] PASS [FL3b] FILTER — all rows match role Student
+[users_find_filter] [10:19:21] DATA filter[3] => {"role":"","status":"0","label":"disabled any role"}
+[users_find_filter] [10:19:21] PASS [FL4] FILTER — disabled any role
+[users_validation] [10:19:21] DATA valid_fixture => {"full_name":"Łukasz O'Brien","username":"lukasz.obrien-staff","email":"lukasz.obrien@uni.edu.dk","password":"SecurePass9","role":"Teacher","is_active":1}
+[users_validation] [10:19:21] PASS [V1] Valid unicode name + email accepted
+[users_validation] [10:19:21] PASS [V2] Boundary 100-char name accepted
+[users_validation] [10:19:21] DATA invalid[0] => {"field":"full_name","value":"","expect":"required"}
+[users_validation] [10:19:21] PASS [VI1] Reject full_name: required
+[users_validation] [10:19:21] DATA invalid[1] => {"field":"full_name","value":"John Smith 2","expect":"no digits"}
+[users_validation] [10:19:21] PASS [VI2] Reject full_name: no digits
+[users_validation] [10:19:21] DATA invalid[2] => {"field":"full_name","value":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX","expect":"max 100"}
+[users_validation] [10:19:21] PASS [VI3] Reject full_name: max 100
+[users_validation] [10:19:21] DATA invalid[3] => {"field":"username","value":"ab","expect":"min 3 chars"}
+[users_validation] [10:19:21] PASS [VI4] Reject username: min 3 chars
+[users_validation] [10:19:21] DATA invalid[4] => {"field":"username","value":"bad user!","expect":"pattern"}
+[users_validation] [10:19:21] PASS [VI5] Reject username: pattern
+[users_validation] [10:19:21] DATA invalid[5] => {"field":"email","value":"not-an-email","expect":"format"}
+[users_validation] [10:19:21] PASS [VI6] Reject email: format
+[users_validation] [10:19:21] DATA invalid[6] => {"field":"password","value":"short","expect":"min 8"}
+[users_validation] [10:19:21] PASS [VI7] Reject password: min 8
+[users_validation] [10:19:21] DATA invalid[7] => {"field":"password","value":"alllowercase1","expect":"uppercase"}
+[users_validation] [10:19:21] PASS [VI8] Reject password: uppercase
+[users_validation] [10:19:21] DATA invalid[8] => {"field":"role","value":"SuperUser","expect":"invalid enum"}
+[users_validation] [10:19:21] PASS [VI9] Reject role: invalid enum
+[users_validation] [10:19:21] PASS [V10] Duplicate username rejected
+
+Users tests complete. Logs:
+C:\Users\59094\Downloads\TO_DO_APP(ANISH)\app\tests/logs/TEST_users_login_2026-06-05_10-19-17.log
+C:\Users\59094\Downloads\TO_DO_APP(ANISH)\app\tests/logs/TEST_users_crud_2026-06-05_10-19-17.log
+C:\Users\59094\Downloads\TO_DO_APP(ANISH)\app\tests/logs/TEST_users_find_filter_2026-06-05_10-19-17.log
+C:\Users\59094\Downloads\TO_DO_APP(ANISH)\app\tests/logs/TEST_users_validation_2026-06-05_10-19-17.log
+[class_Report] [10:19:21] DATA fixture_valid => {"title":"Internship Portfolio Review","subject":"Software Engineering","priority":"High","assign_date":"2026-05-01","due_date":"2026-08-15","status":"In Progress"}
+[class_Report] [10:19:21] PASS [R1] getAll() returns array
+[class_Report] [10:19:21] PASS [R2] getAll() has seeded rows
+[class_Report] [10:19:21] PASS [R3] getById() returns owner_name join
+[class_Report] [10:19:21] PASS [R4] getAll(status=Pending)
+[class_Report] [10:19:21] PASS [R4] getAll(status=In Progress)
+[class_Report] [10:19:21] PASS [R4] getAll(status=Completed)
+[class_Report] [10:19:21] PASS [R5] getAll(priority=Low)
+[class_Report] [10:19:21] PASS [R5] getAll(priority=Medium)
+[class_Report] [10:19:21] PASS [R5] getAll(priority=High)
+[class_Report] [10:19:21] PASS [R6] progressStats() keys
+[class_Report] [10:19:21] PASS [R7] create() INSERT
+[class_Report] [10:19:21] PASS [R8] update() DATE/ENUM fields
+[class_Report] [10:19:21] PASS [R9] delete() removes row
+[class_ScheduledClass] [10:19:21] DATA fixture_valid => {"title":"Advanced Database Systems","instructor":"Prof. Elena Vasquez","classroom":"Building C — Lab 3.14","start_time":"2026-09-15T09:00","end_time":"2026-09-15T11:30"}
+[class_ScheduledClass] [10:19:21] PASS [SC1] getAll()
+[class_ScheduledClass] [10:19:21] PASS [SC2] reportOptions()
+[class_ScheduledClass] [10:19:21] PASS [SC3] getById()
+[class_ScheduledClass] [10:19:21] PASS [SC4] validate end before start
+[class_ScheduledClass] [10:19:21] PASS [SC5] create()
+[class_ScheduledClass] [10:19:21] PASS [SC6] update()
+[class_ScheduledClass] [10:19:21] PASS [SC7] delete()
+[class_Exam] [10:19:21] PASS [E1] getAll()
+[class_Exam] [10:19:21] DATA duration_samples => [30,60,90,120]
+[class_Exam] [10:19:21] PASS [E2] getQuestions()
+[class_Exam] [10:19:21] PASS [E3] classOptions()
+[class_Exam] [10:19:21] PASS [E4] startAttempt() INT id
+[class_Exam] [10:19:21] PASS [E5] submitAttempt() scores
+[class_Exam] [10:19:21] PASS [E6] create() returns id
+[class_Exam] [10:19:21] PASS [E7] addQuestion()
+[class_Exam] [10:19:21] PASS [E8] delete()
+[class_Assignment] [10:19:21] DATA fixture_valid => {"title":"REST API Design Document","subject":"Web Services","assign_date":"2026-06-01","due_date":"2026-06-28","status":"Open"}
+[class_Assignment] [10:19:21] PASS [A1] listAll()
+[class_Assignment] [10:19:21] PASS [A2] search() VARCHAR
+[class_Assignment] [10:19:21] PASS [A3] listAll(status=Open)
+[class_Assignment] [10:19:21] PASS [A3] listAll(status=Closed)
+[class_Assignment] [10:19:21] PASS [A4] getById() teacher_name
+[class_Assignment] [10:19:21] PASS [A5] submissionsForAssignment()
+[class_Assignment] [10:19:21] PASS [A6] create()
+[class_Assignment] [10:19:21] PASS [A7] submit() TEXT
+[class_Assignment] [10:19:21] PASS [A8] markSubmission() INT marks
+[class_Assignment] [10:19:21] PASS [A9] delete()
+
+Model class tests complete:
+C:\Users\59094\Downloads\TO_DO_APP(ANISH)\app\tests/logs/TEST_class_Report_2026-06-05_10-19-17.log
+C:\Users\59094\Downloads\TO_DO_APP(ANISH)\app\tests/logs/TEST_class_ScheduledClass_2026-06-05_10-19-17.log
+C:\Users\59094\Downloads\TO_DO_APP(ANISH)\app\tests/logs/TEST_class_Exam_2026-06-05_10-19-17.log
+C:\Users\59094\Downloads\TO_DO_APP(ANISH)\app\tests/logs/TEST_class_Assignment_2026-06-05_10-19-17.log
+----------------------------------------------------------------------

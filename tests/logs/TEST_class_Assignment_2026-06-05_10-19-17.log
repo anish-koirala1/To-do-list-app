@@ -1,0 +1,19 @@
+APSU Test Log
+Suite  : class_Assignment
+Class  : Assignment
+Owner  : Sunil Kumar BK
+Run at : 2026-06-05T10:19:21+02:00
+PASS   : 10
+FAIL   : 0
+======================================================================
+[10:19:21] DATA fixture_valid => {"title":"REST API Design Document","subject":"Web Services","assign_date":"2026-06-01","due_date":"2026-06-28","status":"Open"}
+[10:19:21] PASS [A1] listAll()
+[10:19:21] PASS [A2] search() VARCHAR
+[10:19:21] PASS [A3] listAll(status=Open)
+[10:19:21] PASS [A3] listAll(status=Closed)
+[10:19:21] PASS [A4] getById() teacher_name
+[10:19:21] PASS [A5] submissionsForAssignment()
+[10:19:21] PASS [A6] create()
+[10:19:21] PASS [A7] submit() TEXT
+[10:19:21] PASS [A8] markSubmission() INT marks
+[10:19:21] PASS [A9] delete()

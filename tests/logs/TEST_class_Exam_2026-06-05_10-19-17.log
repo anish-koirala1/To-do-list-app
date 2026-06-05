@@ -1,0 +1,17 @@
+APSU Test Log
+Suite  : class_Exam
+Class  : Exam
+Owner  : Puskar Bastola
+Run at : 2026-06-05T10:19:21+02:00
+PASS   : 8
+FAIL   : 0
+======================================================================
+[10:19:21] PASS [E1] getAll()
+[10:19:21] DATA duration_samples => [30,60,90,120]
+[10:19:21] PASS [E2] getQuestions()
+[10:19:21] PASS [E3] classOptions()
+[10:19:21] PASS [E4] startAttempt() INT id
+[10:19:21] PASS [E5] submitAttempt() scores
+[10:19:21] PASS [E6] create() returns id
+[10:19:21] PASS [E7] addQuestion()
+[10:19:21] PASS [E8] delete()

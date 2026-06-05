@@ -8,12 +8,14 @@
 require_once __DIR__ . '/../includes/auth_check.php';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/helpers.php';
+require_once __DIR__ . '/../includes/validate_academics.php';
 require_once __DIR__ . '/model/ScheduledClass.php';
 
 $pdo = getDB();
 $model = new ScheduledClass($pdo);
 $action = $_GET['action'] ?? 'index';
 $uid = isStudent() ? currentUserId() : null;
+$errors = [];
 
 if ($action === 'delete' && isset($_GET['id'])) {
     requireStaff();
@@ -23,16 +25,31 @@ if ($action === 'delete' && isset($_GET['id'])) {
 
 if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     requireStaff();
-    $model->create([
-        'report_id' => (int)($_POST['report_id'] ?? 0) ?: null,
-        'user_id' => (int)($_POST['user_id'] ?? currentUserId()),
-        'title' => trim($_POST['title'] ?? ''),
-        'instructor' => trim($_POST['instructor'] ?? ''),
-        'classroom' => trim($_POST['classroom'] ?? ''),
-        'start_time' => $_POST['start_time'] ?? '',
-        'end_time' => $_POST['end_time'] ?? '',
-    ]);
-    redirectWithFlash('index.php', 'success', 'Class scheduled.');
+    $post = $_POST;
+    if (empty($post['user_id'])) {
+        $post['user_id'] = currentUserId();
+    }
+    $validated = validateClassData($post, $pdo);
+    $errors = $validated['errors'];
+    $row = $validated['data'];
+
+    if (empty($errors)) {
+        $model->create([
+            'report_id'   => $row['report_id'],
+            'user_id'     => $row['user_id'] ?: currentUserId(),
+            'title'       => $row['title'],
+            'instructor'  => $row['instructor'],
+            'classroom'   => $row['classroom'],
+            'start_time'  => $row['start_time'],
+            'end_time'    => $row['end_time'],
+        ]);
+        redirectWithFlash('index.php', 'success', 'Class scheduled.');
+    }
+
+    $pageTitle = 'Schedule Class';
+    $reports = $model->reportOptions();
+    require __DIR__ . '/views/form.php';
+    exit;
 }
 
 if ($action === 'edit' && isset($_GET['id'])) {
@@ -41,15 +58,21 @@ if ($action === 'edit' && isset($_GET['id'])) {
     $row = $model->getById($id);
     if (!$row) redirectWithFlash('index.php', 'error', 'Class not found.');
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $model->update($id, [
-            'report_id' => (int)($_POST['report_id'] ?? 0) ?: null,
-            'title' => trim($_POST['title'] ?? ''),
-            'instructor' => trim($_POST['instructor'] ?? ''),
-            'classroom' => trim($_POST['classroom'] ?? ''),
-            'start_time' => $_POST['start_time'] ?? '',
-            'end_time' => $_POST['end_time'] ?? '',
-        ]);
-        redirectWithFlash('index.php', 'success', 'Class updated.');
+        $validated = validateClassData($_POST, $pdo);
+        $errors = $validated['errors'];
+        $row = array_merge($row, $validated['data']);
+
+        if (empty($errors)) {
+            $model->update($id, [
+                'report_id'   => $validated['data']['report_id'],
+                'title'       => $validated['data']['title'],
+                'instructor'  => $validated['data']['instructor'],
+                'classroom'   => $validated['data']['classroom'],
+                'start_time'  => $validated['data']['start_time'],
+                'end_time'    => $validated['data']['end_time'],
+            ]);
+            redirectWithFlash('index.php', 'success', 'Class updated.');
+        }
     }
     $pageTitle = 'Edit Class';
     $reports = $model->reportOptions();

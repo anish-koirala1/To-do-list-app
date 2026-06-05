@@ -1,0 +1,16 @@
+APSU Test Log
+Suite  : class_ScheduledClass
+Class  : ScheduledClass
+Owner  : Puskar Bastola
+Run at : 2026-06-05T10:19:21+02:00
+PASS   : 7
+FAIL   : 0
+======================================================================
+[10:19:21] DATA fixture_valid => {"title":"Advanced Database Systems","instructor":"Prof. Elena Vasquez","classroom":"Building C — Lab 3.14","start_time":"2026-09-15T09:00","end_time":"2026-09-15T11:30"}
+[10:19:21] PASS [SC1] getAll()
+[10:19:21] PASS [SC2] reportOptions()
+[10:19:21] PASS [SC3] getById()
+[10:19:21] PASS [SC4] validate end before start
+[10:19:21] PASS [SC5] create()
+[10:19:21] PASS [SC6] update()
+[10:19:21] PASS [SC7] delete()

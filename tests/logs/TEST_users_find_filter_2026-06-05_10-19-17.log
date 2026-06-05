@@ -1,0 +1,27 @@
+APSU Test Log
+Suite  : users_find_filter
+Class  : userListQuery()
+Owner  : Anish Koirala
+Run at : 2026-06-05T10:19:21+02:00
+PASS   : 11
+FAIL   : 0
+======================================================================
+[10:19:20] DATA search[0] => {"q":"admin","expect_min":1,"type":"partial name"}
+[10:19:20] PASS [F1] FIND — 'admin' (partial name) count>=1
+[10:19:20] DATA search[1] => {"q":"example.com","expect_min":1,"type":"email domain"}
+[10:19:20] PASS [F2] FIND — 'example.com' (email domain) count>=1
+[10:19:20] DATA search[2] => {"q":"teacher","expect_min":1,"type":"role keyword in data"}
+[10:19:20] PASS [F3] FIND — 'teacher' (role keyword in data) count>=1
+[10:19:20] DATA search[3] => {"q":"ZZZNOMATCH999","expect_min":0,"type":"no results"}
+[10:19:20] PASS [F4] FIND — 'ZZZNOMATCH999' (no results) count>=0
+[10:19:20] DATA filter[0] => {"role":"Admin","status":"1","label":"active admins"}
+[10:19:21] PASS [FL1] FILTER — active admins
+[10:19:21] PASS [FL1b] FILTER — all rows match role Admin
+[10:19:21] DATA filter[1] => {"role":"Teacher","status":"1","label":"active teachers"}
+[10:19:21] PASS [FL2] FILTER — active teachers
+[10:19:21] PASS [FL2b] FILTER — all rows match role Teacher
+[10:19:21] DATA filter[2] => {"role":"Student","status":"1","label":"active students"}
+[10:19:21] PASS [FL3] FILTER — active students
+[10:19:21] PASS [FL3b] FILTER — all rows match role Student
+[10:19:21] DATA filter[3] => {"role":"","status":"0","label":"disabled any role"}
+[10:19:21] PASS [FL4] FILTER — disabled any role

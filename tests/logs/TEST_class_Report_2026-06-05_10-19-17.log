@@ -1,0 +1,22 @@
+APSU Test Log
+Suite  : class_Report
+Class  : Report
+Owner  : Utsav Luitel
+Run at : 2026-06-05T10:19:21+02:00
+PASS   : 13
+FAIL   : 0
+======================================================================
+[10:19:21] DATA fixture_valid => {"title":"Internship Portfolio Review","subject":"Software Engineering","priority":"High","assign_date":"2026-05-01","due_date":"2026-08-15","status":"In Progress"}
+[10:19:21] PASS [R1] getAll() returns array
+[10:19:21] PASS [R2] getAll() has seeded rows
+[10:19:21] PASS [R3] getById() returns owner_name join
+[10:19:21] PASS [R4] getAll(status=Pending)
+[10:19:21] PASS [R4] getAll(status=In Progress)
+[10:19:21] PASS [R4] getAll(status=Completed)
+[10:19:21] PASS [R5] getAll(priority=Low)
+[10:19:21] PASS [R5] getAll(priority=Medium)
+[10:19:21] PASS [R5] getAll(priority=High)
+[10:19:21] PASS [R6] progressStats() keys
+[10:19:21] PASS [R7] create() INSERT
+[10:19:21] PASS [R8] update() DATE/ENUM fields
+[10:19:21] PASS [R9] delete() removes row

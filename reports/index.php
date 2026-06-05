@@ -8,12 +8,14 @@
 require_once __DIR__ . '/../includes/auth_check.php';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/helpers.php';
+require_once __DIR__ . '/../includes/validate_academics.php';
 require_once __DIR__ . '/model/Report.php';
 
 $pdo = getDB();
 $model = new Report($pdo);
 $action = $_GET['action'] ?? 'index';
 $baseUrl = '../';
+$errors = [];
 
 // Staff-only: aggregate completion stats and report list
 if ($action === 'track') {
@@ -34,19 +36,29 @@ if ($action === 'delete' && isset($_GET['id'])) {
     redirectWithFlash('index.php', 'success', 'Report deleted.');
 }
 
-// Staff-only: create from POST
+// Staff-only: create from POST with server-side validation
 if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     requireStaff();
-    $model->create([
-        'user_id' => currentUserId(),
-        'title' => trim($_POST['title'] ?? ''),
-        'subject' => trim($_POST['subject'] ?? ''),
-        'priority' => $_POST['priority'] ?? 'Medium',
-        'assign_date' => $_POST['assign_date'] ?? date('Y-m-d'),
-        'due_date' => $_POST['due_date'] ?? date('Y-m-d'),
-        'status' => $_POST['status'] ?? 'Pending',
-    ]);
-    redirectWithFlash('index.php', 'success', 'Report created.');
+    $validated = validateReportData($_POST);
+    $errors = $validated['errors'];
+    $report = $validated['data'];
+
+    if (empty($errors)) {
+        $model->create([
+            'user_id'     => currentUserId(),
+            'title'       => $report['title'],
+            'subject'     => $report['subject'],
+            'priority'    => $report['priority'],
+            'assign_date' => $report['assign_date'],
+            'due_date'    => $report['due_date'],
+            'status'      => $report['status'],
+        ]);
+        redirectWithFlash('index.php', 'success', 'Report created.');
+    }
+
+    $pageTitle = 'Create Report';
+    require __DIR__ . '/views/form.php';
+    exit;
 }
 
 // Staff-only: edit form and POST update
@@ -58,15 +70,14 @@ if ($action === 'edit' && isset($_GET['id'])) {
         redirectWithFlash('index.php', 'error', 'Report not found.');
     }
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $model->update($id, [
-            'title' => trim($_POST['title'] ?? ''),
-            'subject' => trim($_POST['subject'] ?? ''),
-            'priority' => $_POST['priority'] ?? 'Medium',
-            'assign_date' => $_POST['assign_date'] ?? '',
-            'due_date' => $_POST['due_date'] ?? '',
-            'status' => $_POST['status'] ?? 'Pending',
-        ]);
-        redirectWithFlash('index.php', 'success', 'Report updated.');
+        $validated = validateReportData($_POST);
+        $errors = $validated['errors'];
+        $report = array_merge($report, $validated['data']);
+
+        if (empty($errors)) {
+            $model->update($id, $validated['data']);
+            redirectWithFlash('index.php', 'success', 'Report updated.');
+        }
     }
     $pageTitle = 'Edit Report';
     require __DIR__ . '/views/form.php';

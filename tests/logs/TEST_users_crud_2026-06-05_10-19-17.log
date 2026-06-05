@@ -1,0 +1,16 @@
+APSU Test Log
+Suite  : users_crud
+Class  : users table / PDO
+Owner  : Anish Koirala
+Run at : 2026-06-05T10:19:20+02:00
+PASS   : 6
+FAIL   : 0
+======================================================================
+[10:19:20] DATA insert_payload => {"full_name":"Łukasz O'Brien","username":"crud.1780647560","email":"crud.1780647560@uni.edu.dk","password":"SecurePass9","role":"Teacher","is_active":1}
+[10:19:20] PASS [C1] ADD — INSERT user
+[10:19:20] INFO Inserted user id=16 (INT PK)
+[10:19:20] PASS [C2] EDIT — UPDATE full_name and ENUM role
+[10:19:20] PASS [C3] LIST/READ — SELECT returns updated row
+[10:19:20] PASS [C4] EDIT — toggle is_active BOOLEAN
+[10:19:20] PASS [C5] DELETE — remove user
+[10:19:20] PASS [C6] DELETE — row no longer exists
